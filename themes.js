@@ -1,15 +1,40 @@
-export const THEMES = {
-  'iOS Light': { '--bg': '#eef3ff', '--bg2': '#ffffff', '--text': '#0f172a', '--muted': '#64748b', '--panel': 'rgba(255,255,255,.66)', '--stroke': 'rgba(255,255,255,.75)', '--primary': '#4f46e5', '--accent': '#0ea5e9' },
-  'iOS Dark': { '--bg': '#040712', '--bg2': '#0b1224', '--text': '#e2e8f0', '--muted': '#94a3b8', '--panel': 'rgba(15,23,42,.64)', '--stroke': 'rgba(148,163,184,.25)', '--primary': '#60a5fa', '--accent': '#a78bfa' },
-  'Neon Cyber': { '--bg': '#03050f', '--bg2': '#0a1026', '--text': '#e0f2fe', '--muted': '#67e8f9', '--panel': 'rgba(5,15,40,.62)', '--stroke': 'rgba(34,211,238,.35)', '--primary': '#22d3ee', '--accent': '#8b5cf6' },
-  'Jungle Green': { '--bg': '#08180f', '--bg2': '#153427', '--text': '#ecfdf5', '--muted': '#86efac', '--panel': 'rgba(18,56,38,.58)', '--stroke': 'rgba(134,239,172,.3)', '--primary': '#22c55e', '--accent': '#65a30d' },
-  'Golden Premium': { '--bg': '#181105', '--bg2': '#3a2d0d', '--text': '#fef3c7', '--muted': '#fcd34d', '--panel': 'rgba(56,40,12,.6)', '--stroke': 'rgba(251,191,36,.35)', '--primary': '#f59e0b', '--accent': '#fbbf24' }
+const THEMES = {
+  iosLight: {
+    '--bg': 'radial-gradient(circle at top, #f4f7ff, #dfe8ff 70%)',
+    '--panel': 'rgba(255,255,255,0.82)',
+    '--panel-border': 'rgba(255,255,255,0.85)',
+    '--text': '#172038', '--text-soft': '#607198', '--accent': '#4b83ff', '--accent-2': '#67d8ff',
+  },
+  iosDark: {
+    '--bg': 'radial-gradient(circle at top, #2f3f73, #121a2f 60%)', '--panel': 'rgba(255,255,255,0.12)',
+    '--panel-border': 'rgba(255,255,255,0.25)', '--text': '#f4f7ff', '--text-soft': '#cad3ec', '--accent': '#4ea3ff', '--accent-2': '#7ce7ff',
+  },
+  neonCyber: {
+    '--bg': 'radial-gradient(circle at top, #201047, #090314 66%)', '--panel': 'rgba(45, 19, 93, 0.55)',
+    '--panel-border': 'rgba(112, 90, 255, 0.5)', '--text': '#e8dbff', '--text-soft': '#b69bf1', '--accent': '#00d2ff', '--accent-2': '#ff48c4',
+  },
+  jungleGreen: {
+    '--bg': 'radial-gradient(circle at top, #1f5331, #10261a 65%)', '--panel': 'rgba(30,80,54,0.5)',
+    '--panel-border': 'rgba(118, 191, 156, .5)', '--text': '#ecfff2', '--text-soft': '#b8e4c6', '--accent': '#50d98a', '--accent-2': '#96f2b5',
+  },
+  goldenPremium: {
+    '--bg': 'radial-gradient(circle at top, #6e4f1f, #23170a 65%)', '--panel': 'rgba(97,75,34,.55)',
+    '--panel-border': 'rgba(255, 219, 116, .45)', '--text': '#fff8e5', '--text-soft': '#f0d8a1', '--accent': '#ffc43a', '--accent-2': '#ffea9c',
+  },
 };
 
-export function applyTheme(name) {
-  const theme = THEMES[name] || THEMES['iOS Light'];
-  Object.entries(theme).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
-  localStorage.setItem('zoo_theme', name);
-}
+export class ThemeSystem {
+  constructor(storage) {
+    this.storage = storage;
+    this.key = 'theme';
+  }
 
-export function getSavedTheme() { return localStorage.getItem('zoo_theme') || 'iOS Light'; }
+  apply(themeName) {
+    const vars = THEMES[themeName] || THEMES.iosDark;
+    Object.entries(vars).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+    this.storage.set(this.key, themeName);
+  }
+
+  init() { this.apply(this.storage.get(this.key, 'iosDark')); }
+  all() { return Object.keys(THEMES); }
+}

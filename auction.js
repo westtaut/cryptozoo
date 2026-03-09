@@ -1,44 +1,55 @@
-import { ECON } from './economy.js';
-
 export class AuctionSystem {
-  constructor(state) { this.state = state; }
-
-  placeBid(listingId, bidderId, amount, currency = 'coins') {
-    const lot = this.state.marketListings.find((x) => x.id === listingId && x.active && x.mode === 'auction');
-    if (!lot) throw new Error('Auction not active');
-    if (lot.seller_id === bidderId) throw new Error('Seller cannot bid');
-    const player = this.state.players[bidderId];
-    const top = lot.current_price || lot.starting_price;
-    const minNext = Math.ceil(top * (1 + ECON.minBidStep));
-    if (amount < minNext) throw new Error(`Min bid ${minNext}`);
-    if (player[currency] < amount) throw new Error('Not enough funds');
-
-    lot.current_price = amount;
-    lot.bid_history.push({ bidder_id: bidderId, amount, time: Date.now() });
-
-    if (lot.end_time - Date.now() <= ECON.antiSnipeMs) {
-      lot.end_time += ECON.antiSnipeMs;
-    }
+  constructor(economy) {
+    this.economy = economy;
+    this.auctions = [];
   }
 
-  settle() {
-    const now = Date.now();
-    for (const lot of this.state.marketListings.filter((x) => x.mode === 'auction' && x.active && x.end_time <= now)) {
-      lot.active = false;
-      const animal = this.state.animals.find((a) => a.id === lot.animal_id);
-      const winner = lot.bid_history.at(-1);
-      if (!animal) continue;
-      if (!winner) { animal.locked = false; continue; }
-      const buyer = this.state.players[winner.bidder_id];
-      if (!buyer || buyer.coins < winner.amount) { animal.locked = false; continue; }
+  createAuction({ sellerId, animal, startPrice, durationSec }) {
+    const auction = {
+      id: crypto.randomUUID(),
+      sellerId,
+      animalId: animal.uid,
+      rarity: animal.rarity,
+      stats: animal.stats,
+      startPrice,
+      currentPrice: startPrice,
+      highestBidderId: null,
+      bids: [],
+      endsAt: Date.now() + durationSec * 1000,
+    };
+    this.auctions.push(auction);
+    return auction;
+  }
 
-      const fee = Math.floor(winner.amount * ECON.auctionFee);
-      buyer.coins -= winner.amount;
-      this.state.players[lot.seller_id].coins += winner.amount - fee;
-      this.state.treasury += fee;
-      animal.ownerId = winner.bidder_id;
-      animal.locked = false;
-      this.state.salesHistory.unshift({ animal_id: animal.id, rarity: animal.rarity, price: winner.amount, at: Date.now(), side: 'buy' });
-    }
+  placeBid(auctionId, bidderId, amount, wallets) {
+    const auction = this.auctions.find((a) => a.id === auctionId);
+    if (!auction) throw new Error("Auction not found");
+    if (Date.now() > auction.endsAt) throw new Error("Auction ended");
+    if (amount <= auction.currentPrice) throw new Error("Bid too low");
+    if (wallets[bidderId].coins < amount) throw new Error("Insufficient funds");
+
+    auction.currentPrice = amount;
+    auction.highestBidderId = bidderId;
+    auction.bids.push({ bidderId, amount, ts: Date.now() });
+
+    if (auction.endsAt - Date.now() < 10_000) auction.endsAt += 20_000;
+    return auction;
+  }
+
+  settle(wallets, ownership) {
+    const now = Date.now();
+    const settled = [];
+    this.auctions = this.auctions.filter((a) => {
+      if (a.endsAt > now) return true;
+      if (a.highestBidderId) {
+        const fee = this.economy.marketFee(a.currentPrice, 0.05);
+        wallets[a.highestBidderId].coins -= a.currentPrice;
+        wallets[a.sellerId].coins += a.currentPrice - fee;
+        ownership[a.animalId] = a.highestBidderId;
+      }
+      settled.push(a);
+      return false;
+    });
+    return settled;
   }
 }

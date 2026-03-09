@@ -1,6 +1,20 @@
-export function initTelegram(){
-  const tg = window.Telegram?.WebApp;
-  if(tg){ tg.expand(); tg.ready(); }
-  const user = tg?.initDataUnsafe?.user;
-  return { id: String(user?.id || 'local_user'), name: user?.first_name || 'Local Player' };
+export class TelegramIntegration {
+  constructor() {
+    this.webApp = window.Telegram?.WebApp ?? null;
+  }
+
+  init() {
+    if (!this.webApp) return;
+    this.webApp.ready();
+    this.webApp.expand();
+    this.webApp.enableClosingConfirmation();
+  }
+
+  getUser() {
+    return this.webApp?.initDataUnsafe?.user ?? { id: 'local-player', username: 'LocalTester' };
+  }
+
+  haptic(type = 'medium') {
+    this.webApp?.HapticFeedback?.impactOccurred(type);
+  }
 }
