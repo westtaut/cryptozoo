@@ -14,11 +14,13 @@ const UI = {
     this.updateTokenHUD();
     if (this.currentTab === 'map')     this.renderMap();
     if (this.currentTab === 'shop')    this.renderShop();
+    if (this.currentTab === 'cases')   this.renderCases();
     if (this.currentTab === 'animals') this.renderCollection();
     if (this.currentTab === 'upgrade') this.renderUpgrades();
     if (this.currentTab === 'daily')   this.renderDaily();
     if (this.currentTab === 'ref')     this.renderReferral();
     if (this.currentTab === 'tokens')  this.renderTokens();
+    if (this.currentTab === 'market')  this.renderMarket();
   },
 
   // ── HUD ─────────────────────────────────────────────
@@ -173,6 +175,83 @@ const UI = {
     this.renderShop();
   },
 
+
+
+  // ── CASES ───────────────────────────────────────────
+  renderCases() {
+    const list = document.getElementById('cases-list');
+    if (!list) return;
+
+    list.innerHTML = CASES.map(c => {
+      const canOpen = G.coins >= c.price;
+      const chances = c.pool.map(([tier, chance]) => `${chance}% ${TIER_CONFIG[tier]?.label || tier}`).join(' / ');
+      return `
+        <div class="shop-card ${canOpen?'':'locked'}">
+          <div class="shop-emoji">${c.emoji}</div>
+          <div class="shop-info">
+            <div class="shop-name">${c.name} ${c.temporary ? '<span class="tier-badge" style="color:var(--gold)">Event</span>' : ''}</div>
+            <div class="shop-stats"><span class="profit-tag">${chances}</span></div>
+          </div>
+          <div class="shop-right">
+            <div class="shop-price ${canOpen?'':'unafford'}">🪙 ${fmtN(c.price)}</div>
+            <button class="buy-btn ${canOpen?'':'cant'}" onclick="openCase('${c.id}')">Open</button>
+          </div>
+        </div>`;
+    }).join('');
+  },
+
+  // ── MARKET ──────────────────────────────────────────
+  renderMarket() {
+    const list = document.getElementById('market-list');
+    if (!list) return;
+
+    const myUnlisted = (G.animalInstances || []).filter(a => !a.listed);
+
+    const myBlock = myUnlisted.length
+      ? myUnlisted.map(inst => {
+          const def = ANIMALS.find(a => a.id === inst.id);
+          const price = Math.max(100, Math.floor(inst.income * 10));
+          return `<div class="upg-card">
+            <div class="upg-icon">${def?.emoji || '🐾'}</div>
+            <div class="upg-info">
+              <div class="upg-name">${def?.name || 'Animal'} <span class="upg-lvl-tag">${(inst.generatedTier||'common').toUpperCase()}</span></div>
+              <div class="upg-desc">Lv${inst.generatedStats.level} · Charm ${inst.generatedStats.charm} · Speed ${inst.generatedStats.speed}</div>
+              <div class="upg-effect">Income +${fmtN(inst.income)}/s</div>
+            </div>
+            <button class="upg-btn" onclick="listAnimalOnMarket(${inst.uid}, ${price})">Sell ${fmtN(price)}</button>
+          </div>`;
+        }).join('')
+      : '<div class="empty-state"><p>No free animals for sale yet.</p></div>';
+
+    const listings = (G.marketListings || []).length
+      ? G.marketListings.map(item => {
+          const def = ANIMALS.find(a => a.id === item.id);
+          return `<div class="upg-card">
+            <div class="upg-icon">${def?.emoji || '🐾'}</div>
+            <div class="upg-info">
+              <div class="upg-name">${def?.name || 'Animal'} <span class="upg-lvl-tag">${(item.generatedTier||'common').toUpperCase()}</span></div>
+              <div class="upg-desc">Lv${item.generatedStats.level} · Mult ×${item.generatedStats.profit_multiplier}</div>
+              <div class="upg-effect">Income +${fmtN(item.income)}/s</div>
+            </div>
+            <button class="upg-btn" onclick="buyMarketListing(${item.listingId})">Buy ${fmtN(item.price)}</button>
+          </div>`;
+        }).join('')
+      : '<div class="empty-state"><p>No listings yet. Be first!</p></div>';
+
+    list.innerHTML = `
+      <div class="daily-info-card" style="margin-bottom:10px">
+        <div style="font-size:12px;color:var(--tx2);font-weight:700;text-transform:uppercase">Your animals</div>
+        ${myBlock}
+      </div>
+      <div class="daily-info-card">
+        <div style="font-size:12px;color:var(--tx2);font-weight:700;text-transform:uppercase">Open listings</div>
+        ${listings}
+      </div>
+      <div class="daily-info-card" style="margin-top:10px">
+        <div style="font-size:12px;color:var(--tx2);font-weight:700;text-transform:uppercase">Trade & Auction</div>
+        <div class="upg-effect">🤝 Direct exchange and auctions are enabled as social actions.</div>
+      </div>`;
+  },
   // ── COLLECTION ───────────────────────────────────────
   renderCollection() {
     const grid = document.getElementById('collection-grid');

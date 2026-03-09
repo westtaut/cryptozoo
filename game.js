@@ -245,6 +245,128 @@ function removeFromSlot(slotIdx) {
   UI.renderAll();
 }
 
+
+
+// ── CASES (LOOT BOXES) ───────────────────────────────
+function openCase(caseId) {
+  const caseDef = CASES.find(c => c.id === caseId);
+  if (!caseDef) return false;
+  if (G.coins < caseDef.price) {
+    showToast('❌ Not enough coins for this case');
+    return false;
+  }
+
+  G.coins -= caseDef.price;
+
+  const rarity = rollRarity(caseDef);
+  const animal = randomAnimalFromTier(rarity);
+  if (!animal) {
+    showToast('❌ No animals for this rarity yet');
+    return false;
+  }
+
+  const stats = generateStats(rarity);
+  const income = Math.floor(calcGeneratedIncome(animal.profit, rarity, stats));
+  const instance = {
+    uid: Date.now() + Math.floor(Math.random() * 100000),
+    id: animal.id,
+    generatedTier: rarity,
+    generatedStats: stats,
+    income,
+    sourceCase: caseId,
+    listed: false,
+  };
+
+  G.animalInstances.push(instance);
+
+  if (!G.owned[animal.id]) G.owned[animal.id] = { id: animal.id, count: 0, maxLevel: 1 };
+  G.owned[animal.id].count++;
+  G.owned[animal.id].maxLevel = Math.max(G.owned[animal.id].maxLevel, stats.level);
+
+  const capacity = getZooCapacity(G);
+  const placed = G.slots.filter(Boolean).length;
+  if (placed < capacity) {
+    const emptyIdx = G.slots.findIndex(s => !s);
+    if (emptyIdx !== -1) {
+      G.slots[emptyIdx] = {
+        id: animal.id,
+        level: stats.level,
+        uid: instance.uid,
+        generatedTier: rarity,
+        generatedStats: stats,
+      };
+    }
+  }
+
+  G.income = calcTotalIncome(G);
+  saveGame(G);
+  UI.renderAll();
+  showToast(`${animal.emoji} ${animal.name} (${rarity.toUpperCase()}) +${fmtN(income)}/s`);
+  return instance;
+}
+
+function listAnimalOnMarket(uid, price) {
+  const inst = G.animalInstances.find(x => x.uid === uid);
+  if (!inst || inst.listed) return false;
+
+  inst.listed = true;
+  G.marketListings.push({
+    listingId: Date.now() + Math.floor(Math.random() * 10000),
+    sellerId: G.userId || 'local-player',
+    uid: inst.uid,
+    id: inst.id,
+    generatedTier: inst.generatedTier,
+    generatedStats: inst.generatedStats,
+    income: inst.income,
+    price,
+  });
+
+  saveGame(G);
+  UI.renderAll();
+  showToast('📦 Animal listed on marketplace');
+  return true;
+}
+
+function buyMarketListing(listingId) {
+  const idx = G.marketListings.findIndex(x => x.listingId === listingId);
+  if (idx === -1) return false;
+
+  const listing = G.marketListings[idx];
+  if (G.coins < listing.price) {
+    showToast('❌ Not enough coins');
+    return false;
+  }
+
+  G.coins -= listing.price;
+  const instance = {
+    uid: Date.now() + Math.floor(Math.random() * 100000),
+    id: listing.id,
+    generatedTier: listing.generatedTier,
+    generatedStats: listing.generatedStats,
+    income: listing.income,
+    sourceCase: 'market',
+    listed: false,
+  };
+
+  G.marketListings.splice(idx, 1);
+  G.animalInstances.push(instance);
+
+  if (!G.owned[instance.id]) G.owned[instance.id] = { id: instance.id, count: 0, maxLevel: 1 };
+  G.owned[instance.id].count++;
+  G.owned[instance.id].maxLevel = Math.max(G.owned[instance.id].maxLevel, instance.generatedStats.level);
+
+  saveGame(G);
+  UI.renderAll();
+  showToast('✅ Bought from marketplace');
+  return true;
+}
+
+function requestTrade(uid) {
+  const inst = G.animalInstances.find(x => x.uid === uid);
+  if (!inst) return false;
+  showToast('🤝 Trade request sent (demo)');
+  return true;
+}
 // ── DAILY REWARD ──────────────────────────────────────
 function claimDailyReward() {
   const now = Date.now();
