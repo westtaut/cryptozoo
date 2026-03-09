@@ -135,6 +135,81 @@ function getZooCapacity(G) {
   return 50 + (G.upgrades.zoo_capacity || 0) * 10;
 }
 
+
+
+// ── LOOT BOX + GENERATED STATS ───────────────────────
+const LOOT_BOXES = [
+  {
+    id: 'basic',
+    name: 'Basic Crate',
+    emoji: '📦',
+    price: 5000,
+    odds: { common: 0.75, rare: 0.2, epic: 0.045, legendary: 0.005 },
+    statRoll: { min: 0.85, max: 1.2 },
+  },
+  {
+    id: 'premium',
+    name: 'Premium Crate',
+    emoji: '🎁',
+    price: 50000,
+    odds: { common: 0.45, rare: 0.35, epic: 0.17, legendary: 0.03 },
+    statRoll: { min: 0.95, max: 1.4 },
+  },
+  {
+    id: 'mythic',
+    name: 'Mythic Vault',
+    emoji: '🧰',
+    price: 250000,
+    odds: { common: 0.2, rare: 0.35, epic: 0.35, legendary: 0.1 },
+    statRoll: { min: 1.05, max: 1.75 },
+  },
+];
+
+function getLootBox(boxId) {
+  return LOOT_BOXES.find(b => b.id === boxId);
+}
+
+function pickTierByOdds(odds) {
+  const r = Math.random();
+  let acc = 0;
+  for (const [tier, prob] of Object.entries(odds)) {
+    acc += prob;
+    if (r <= acc) return tier;
+  }
+  return 'common';
+}
+
+function randomFrom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generateAnimalFromBox(boxDef, uid) {
+  const tier = pickTierByOdds(boxDef.odds);
+  const pool = ANIMALS.filter(a => a.tier === tier);
+  const base = randomFrom(pool) || ANIMALS[0];
+
+  const min = boxDef.statRoll.min;
+  const max = boxDef.statRoll.max;
+  const statMult = +(min + (max - min) * Math.random()).toFixed(2);
+  const priceMult = +(0.85 + statMult * 0.4).toFixed(2);
+
+  return {
+    uid,
+    animalId: base.id,
+    name: base.name,
+    emoji: base.emoji,
+    tier: base.tier,
+    baseProfit: base.profit,
+    statMult,
+    marketValue: Math.floor(base.price * priceMult),
+    createdAt: Date.now(),
+  };
+}
+
+function generatedIncome(animal) {
+  return Math.floor((animal.baseProfit || 0) * (animal.statMult || 1));
+}
+
 // ── MILESTONES ────────────────────────────────────────
 const MILESTONES = [
   // [threshold_type, threshold_value, token_reward, coin_reward, label]

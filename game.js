@@ -245,6 +245,74 @@ function removeFromSlot(slotIdx) {
   UI.renderAll();
 }
 
+
+
+// ── LOOT BOX ──────────────────────────────────────────
+function openLootBox(boxId) {
+  const box = getLootBox(boxId);
+  if (!box) return null;
+  if (G.coins < box.price) {
+    showToast(`❌ Need ${fmtN(box.price)} coins!`);
+    return null;
+  }
+
+  G.coins -= box.price;
+  const animal = generateAnimalFromBox(box, G.nextAnimalUid++);
+  G.generatedAnimals.push(animal);
+  G.lootOpened = (G.lootOpened || 0) + 1;
+
+  const tokenReward = AIRDROP.animalPurchase(animal.tier) || 0;
+  if (tokenReward > 0) {
+    G.tokens += tokenReward;
+    G.totalTokensEarned += tokenReward;
+  }
+
+  showToast(`${box.emoji} ${animal.emoji} ${animal.name} (${Math.round(animal.statMult*100)}%)`);
+  saveGame(G);
+  UI.renderAll();
+  return animal;
+}
+
+function listGeneratedAnimal(uid, price) {
+  const idx = G.generatedAnimals.findIndex(a => a.uid === uid);
+  if (idx === -1) return false;
+
+  const animal = G.generatedAnimals[idx];
+  const sellPrice = Math.max(1, Math.floor(price || animal.marketValue));
+
+  G.generatedAnimals.splice(idx, 1);
+  G.marketListings.push({
+    id: `${uid}-${Date.now()}`,
+    seller: G.userId || 'local-player',
+    animal,
+    price: sellPrice,
+    listedAt: Date.now(),
+  });
+  showToast(`🏷️ Listed ${animal.emoji} ${animal.name} for 🪙${fmtN(sellPrice)}`);
+  saveGame(G);
+  UI.renderAll();
+  return true;
+}
+
+function buyMarketListing(listingId) {
+  const idx = G.marketListings.findIndex(l => l.id === listingId);
+  if (idx === -1) return false;
+
+  const listing = G.marketListings[idx];
+  if (G.coins < listing.price) {
+    showToast('❌ Not enough coins!');
+    return false;
+  }
+
+  G.coins -= listing.price;
+  G.generatedAnimals.push(listing.animal);
+  G.marketListings.splice(idx, 1);
+  showToast(`🛍️ Bought ${listing.animal.emoji} ${listing.animal.name}`);
+  saveGame(G);
+  UI.renderAll();
+  return true;
+}
+
 // ── DAILY REWARD ──────────────────────────────────────
 function claimDailyReward() {
   const now = Date.now();
