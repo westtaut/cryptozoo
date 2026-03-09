@@ -1,58 +1,51 @@
-import { ECON } from './economy.js';
+export class MarketplaceSystem {
+  constructor(economy) {
+    this.economy = economy;
+    this.listings = [];
+  }
 
-export class MarketSystem {
-  constructor(state) { this.state = state; }
-
-  createListing(animal, sellerId, mode = 'buy', price = 100, durationH = 24) {
-    if (animal.ownerId !== sellerId || animal.locked) throw new Error('Нельзя выставить это животное');
-    animal.locked = true;
-    const now = Date.now();
+  listAnimal({ sellerId, animal, price }) {
     const listing = {
       id: crypto.randomUUID(),
-      mode,
-      seller_id: sellerId,
-      animal_id: animal.id,
+      sellerId,
+      animalId: animal.uid,
       rarity: animal.rarity,
-      stats: animal,
-      starting_price: price,
-      current_price: price,
-      bid_history: [],
-      created_at: now,
-      end_time: now + durationH * 3600 * 1000,
-      expiration_time: now + durationH * 3600 * 1000,
+      stats: animal.stats,
+      level: animal.level,
+      income: animal.baseIncome,
       price,
-      active: true
+      timestamp: Date.now(),
+      expiresAt: Date.now() + 1000 * 60 * 60 * 24,
     };
-    this.state.marketListings.push(listing);
+    this.listings.push(listing);
     return listing;
   }
 
-  buy(listingId, buyerId, currency = 'coins') {
-    const l = this.state.marketListings.find((x) => x.id === listingId && x.active && x.mode === 'buy');
-    if (!l) throw new Error('Лот недоступен');
-    const animal = this.state.animals.find((a) => a.id === l.animal_id);
-    const payer = this.state.players[buyerId];
-    const marketPrice = Math.floor(Math.max(l.price, ECON.priceIndex(animal, this.state.salesHistory)));
-    if (payer[currency] < marketPrice) throw new Error('Недостаточно средств');
-    payer[currency] -= marketPrice;
-    const net = Math.floor(marketPrice * (1 - ECON.auctionFee));
-    this.state.players[l.seller_id][currency] += net;
-    this.state.treasury += marketPrice - net;
-    animal.ownerId = buyerId;
-    animal.locked = false;
-    l.active = false;
-    this.state.salesHistory.unshift({ animal_id: animal.id, price: marketPrice, rarity: animal.rarity, at: Date.now(), side: 'buy' });
+  buy(listingId, buyerId, wallets, ownership) {
+    const idx = this.listings.findIndex((x) => x.id === listingId);
+    if (idx === -1) throw new Error("Listing not found");
+    const listing = this.listings[idx];
+    if (wallets[buyerId].coins < listing.price) throw new Error("Not enough coins");
+
+    const fee = this.economy.marketFee(listing.price, 0.05);
+    wallets[buyerId].coins -= listing.price;
+    wallets[listing.sellerId].coins += listing.price - fee;
+    ownership[listing.animalId] = buyerId;
+    this.listings.splice(idx, 1);
+    return { fee, listing };
   }
 
-  cleanupExpired() {
-    const now = Date.now();
-    this.state.marketListings.forEach((l) => {
-      const ttl = l.mode === 'auction' ? l.end_time : l.expiration_time;
-      if (l.active && ttl < now) {
-        l.active = false;
-        const a = this.state.animals.find((x) => x.id === l.animal_id);
-        if (a) a.locked = false;
-      }
-    });
+  filter(criteria = {}) {
+    const { rarity, levelMin = 1, incomeMin = 0, minPrice = 0, maxPrice = Number.MAX_SAFE_INTEGER } = criteria;
+    return this.listings.filter((x) =>
+      (!rarity || x.rarity === rarity)
+      && x.level >= levelMin
+      && x.income >= incomeMin
+      && x.price >= minPrice
+      && x.price <= maxPrice);
+  }
+
+  pruneExpired(now = Date.now()) {
+    this.listings = this.listings.filter((x) => x.expiresAt > now);
   }
 }

@@ -1,70 +1,76 @@
-import { CASES } from './cases.js';
-import { THEMES } from './themes.js';
-
-export function bindTabs() {
-  document.querySelectorAll('.tab').forEach((btn) => btn.onclick = () => {
-    document.querySelectorAll('.tab,.panel').forEach((n) => n.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(btn.dataset.tab).classList.add('active');
-  });
-}
-
-export function renderHUD(_, me) {
-  coins.textContent = Math.floor(me.coins);
-  token.textContent = Math.floor(me.zooToken);
-  energy.textContent = Math.floor(me.energy);
-}
-
-export function renderZoo(state, me, onPlace) {
-  zooGrid.innerHTML = '';
-  for (let i = 0; i < 20; i++) {
-    const a = state.zooSlots[i];
-    const cell = document.createElement('button');
-    cell.className = 'zoo-cell glass';
-    cell.innerHTML = a ? `<span class="emoji">${a.emoji}</span><small>${a.name.slice(0, 12)}</small>` : '<small>+ Empty</small>';
-    cell.onclick = () => onPlace(i);
-    zooGrid.appendChild(cell);
+export class UISystem {
+  constructor(themeSystem) {
+    this.themeSystem = themeSystem;
+    this.container = document.getElementById('screen-container');
+    this.tabsNode = document.getElementById('tab-nav');
+    this.activeTab = 'Map';
+    this.tabs = ['Map','Cases','Animals','Market','Auction','PvP','Leaderboard','Daily','Settings'];
+    this.onTab = () => {};
   }
-  inventory.innerHTML = state.animals.filter((a) => a.ownerId === me.id && !a.locked).slice(0, 80).map(card).join('');
-}
 
-export function renderCases(onOpen) {
-  caseList.innerHTML = Object.entries(CASES).map(([k, c]) => `<div class="card glass"><b>${c.name}</b><p>Шанс: CS-style рулетка</p><button class="primary" data-case="${k}">Open</button></div>`).join('');
-  caseList.querySelectorAll('button').forEach((b) => b.onclick = () => onOpen(b.dataset.case));
-}
+  mountTabs() {
+    this.tabsNode.innerHTML = '';
+    this.tabs.forEach((tab) => {
+      const b = document.createElement('button');
+      b.className = `tab-btn ${tab === this.activeTab ? 'active': ''}`;
+      b.textContent = tab;
+      b.addEventListener('click', () => {
+        this.activeTab = tab;
+        this.mountTabs();
+        this.onTab(tab);
+      });
+      this.tabsNode.appendChild(b);
+    });
+  }
 
-export function animateRoulette(items, ultra = false) {
-  roulette.classList.toggle('ultra', ultra);
-  roulette.innerHTML = items.map((i) => `<div class="chip rarity-${i.rarity}">${i.emoji} ${i.name}</div>`).join('');
-}
+  setTop(player) {
+    document.getElementById('player-level').textContent = `Level ${player.level}`;
+    document.getElementById('coins').textContent = Math.floor(player.coins).toLocaleString();
+    document.getElementById('tokens').textContent = Math.floor(player.tokens).toLocaleString();
+  }
 
-export function renderMarket(state, me, handlers) {
-  marketList.innerHTML = state.marketListings.map((l) => `<div class="animal-card rarity-${l.rarity}"><b>${l.stats.emoji} ${l.stats.name}</b><br>${l.mode}<br>💰${Math.floor(l.current_price || l.price)}<br><button class="primary" data-id="${l.id}">${l.mode === 'buy' ? 'Buy' : 'Bid'}</button></div>`).join('');
-  document.querySelectorAll('#marketList button').forEach((b) => b.onclick = () => handlers.onAction(b.dataset.id));
-  const options = state.animals.filter((a) => a.ownerId === me.id && !a.locked).slice(0, 30).map((a) => `<option value="${a.id}">${a.emoji} ${a.name}</option>`).join('');
-  sellForm.innerHTML = `<select id="sellAnimal">${options}</select><select id="sellMode"><option value="buy">Buy now</option><option value="auction">Auction</option></select><input id="sellPrice" type="number" value="300"/><button class="primary" id="sellBtn">List</button>`;
-  sellBtn.onclick = handlers.onCreate;
-}
+  renderMap(playerAnimals, incomeFn) {
+    this.container.innerHTML = `<section class="panel glass"><h2>Zoo Map</h2><div class="zoo-grid" id="zoo-grid"></div></section>`;
+    const grid = this.container.querySelector('#zoo-grid');
+    for (let i = 0; i < 12; i += 1) {
+      const cell = document.createElement('div');
+      cell.className = 'zoo-cell';
+      const animal = playerAnimals[i];
+      if (animal) {
+        cell.innerHTML = `<div class="animal-card rarity-${animal.rarity}"><div class="emoji">${animal.emoji}</div><div><h3>${animal.name}</h3><p>Lv.${animal.level}</p><p>+${Math.round(incomeFn(animal))}/s</p></div></div>`;
+      }
+      grid.appendChild(cell);
+    }
+  }
 
-export function renderAuctions(state) {
-  auctionList.innerHTML = state.marketListings.filter((l) => l.mode === 'auction' && l.active).map((l) => `<div class="card glass"><b>${l.stats.emoji} ${l.stats.name}</b><br>Start: ${l.starting_price} • Current: ${Math.floor(l.current_price)}<br>Bids: ${l.bid_history.length} • End: ${new Date(l.end_time).toLocaleTimeString()}</div>`).join('');
-}
+  renderCases(casePrice, onOpen) {
+    this.container.innerHTML = `<section class="panel glass"><h2>Cases</h2><p>Price: ${casePrice} coins</p><button class="btn" id="open-case">Open Case</button><div id="roulette"></div></section>`;
+    this.container.querySelector('#open-case').addEventListener('click', onOpen);
+    return this.container.querySelector('#roulette');
+  }
 
-export function renderPriceChart(salesHistory) {
-  const now = Date.now();
-  const windows = { '24H': 86400000, '7D': 7 * 86400000, '30D': 30 * 86400000 };
-  priceCharts.innerHTML = Object.entries(windows).map(([label, ms]) => {
-    const points = salesHistory.filter((s) => s.at > now - ms).slice(0, 30);
-    const max = Math.max(1, ...points.map((p) => p.price));
-    const d = points.map((p, i) => `${(i / 29) * 100},${100 - (p.price / max) * 100}`).join(' ');
-    return `<div class="card glass"><b>${label}</b><svg viewBox="0 0 100 100"><polyline fill="none" stroke="var(--accent)" stroke-width="2" points="${d}"/></svg></div>`;
-  }).join('');
-}
+  renderAnimals(list) {
+    this.container.innerHTML = '<section class="panel glass"><h2>Animals</h2><div id="animals-list"></div></section>';
+    const wrap = this.container.querySelector('#animals-list');
+    list.forEach((a) => {
+      const row = document.createElement('div');
+      row.className = `animal-card rarity-${a.rarity}`;
+      row.innerHTML = `<div class="emoji">${a.emoji}</div><div><h3>${a.name}</h3><p>${a.rarity} • ${a.mutation}</p></div>`;
+      wrap.appendChild(row);
+    });
+  }
 
-export function renderPvp(state, me) { pvpRoster.innerHTML = state.animals.filter((a) => a.ownerId === me.id && !a.locked).slice(0, 9).map((a) => `<label class="animal-card rarity-${a.rarity}"><input type="checkbox" value="${a.id}"/>${a.emoji} ${a.name}</label>`).join(''); }
-export function renderLeaders(lines) { leadersList.innerHTML = lines.map((l) => `<div>${l}</div>`).join(''); }
-export function renderThemes(onTheme) {
-  themes.innerHTML = Object.keys(THEMES).map((t) => `<button class="card glass" data-theme="${t}">${t}</button>`).join('');
-  document.querySelectorAll('[data-theme]').forEach((b) => b.onclick = () => onTheme(b.dataset.theme));
+  renderSimple(title, body) { this.container.innerHTML = `<section class="panel glass"><h2>${title}</h2>${body}</section>`; }
+
+  renderSettings(onThemeChange) {
+    this.container.innerHTML = '<section class="panel glass"><h2>Settings</h2><div id="theme-grid"></div></section>';
+    const grid = this.container.querySelector('#theme-grid');
+    this.themeSystem.all().forEach((theme) => {
+      const b = document.createElement('button');
+      b.className = 'btn-secondary';
+      b.textContent = theme;
+      b.addEventListener('click', () => onThemeChange(theme));
+      grid.appendChild(b);
+    });
+  }
 }
-const card = (a) => `<div class="animal-card rarity-${a.rarity}">${a.emoji}<b>${a.name}</b><br>${a.rarity} • Lv.${a.level}<br>💰${Math.floor(a.income)} ⚔️${a.power}</div>`;

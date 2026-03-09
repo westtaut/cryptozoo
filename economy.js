@@ -1,46 +1,98 @@
-import { rarityMultipliers } from './animals.js';
+const rarityMultiplier = { common: 1, rare: 1.8, epic: 3.2, legendary: 6.5, mythic: 12 };
+const mutationMultiplier = { None: 1, Golden: 1.2, Albino: 1.35, Cyber: 1.6, Shadow: 2.1, Prismatic: 3.5 };
 
-const DAY = 86400000;
-
-function buildFormulaLibrary() {
-  const formulas = {};
-  for (let i = 1; i <= 220; i++) {
-    formulas[`f${i}`] = (x = 1, y = 1, z = 1) => (x * (1 + i * 0.0025) + y * (i % 7) + z * (i % 5)) / (1 + (i % 9) * 0.1);
+export class EconomyEngine {
+  constructor() {
+    this.formulas = this.buildFormulaMatrix();
+    this.dynamicState = {
+      inflationIndex: 1,
+      dropCorrection: 1,
+      rewardCorrection: 1,
+      upgradeCorrection: 1,
+      casePriceCorrection: 1,
+    };
   }
-  return formulas;
+
+  buildFormulaMatrix() {
+    const matrix = [];
+    for (let i = 1; i <= 320; i += 1) {
+      matrix.push({
+        id: `F-${i}`,
+        value: (x, y = 1) => (Math.log1p(x * i) + Math.sqrt(y + i)) / (1 + i * 0.005),
+      });
+    }
+    return matrix;
+  }
+
+  calculateAnimalIncome(animal, zooLevel, boosts = {}) {
+    const levelMultiplier = 1 + (animal.level - 1) * 0.12;
+    const statMultiplier = (animal.stats.power * 0.35 + animal.stats.speed * 0.25 + animal.stats.luck * 0.4) / 100;
+    const mutation = mutationMultiplier[animal.mutation] ?? 1;
+    const boostMultiplier = 1 + (boosts.globalIncome ?? 0) + (boosts.eventIncome ?? 0);
+    return animal.baseIncome * rarityMultiplier[animal.rarity] * levelMultiplier * (1 + statMultiplier) * mutation * boostMultiplier;
+  }
+
+  calculateZooIncome(animals, player, boosts = {}) {
+    const raw = animals.reduce((sum, animal) => sum + this.calculateAnimalIncome(animal, player.zooLevel, boosts), 0);
+    const zooLevelMultiplier = 1 + player.zooLevel * 0.06;
+    const prestigeMultiplier = 1 + player.prestige * 0.2;
+    return raw * zooLevelMultiplier * prestigeMultiplier * this.dynamicState.rewardCorrection;
+  }
+
+  upgradeCost(baseCost, level) {
+    return Math.round(baseCost * (1.15 ** level) * this.dynamicState.upgradeCorrection);
+  }
+
+  casePrice(baseCasePrice, playerLevel, growthFactor = 0.08) {
+    return Math.round(baseCasePrice * (1 + playerLevel * growthFactor) * this.dynamicState.casePriceCorrection);
+  }
+
+  pvpReward(playerLevel, streak = 0, rankTier = 5) {
+    return Math.round((80 + playerLevel * 18) * (1 + streak * 0.06) * (1 + (6 - rankTier) * 0.15));
+  }
+
+  dailyReward(baseReward, streakDays, playerLevel) {
+    return Math.round(baseReward * (1 + streakDays * 0.15) * (1 + playerLevel * 0.04) * this.dynamicState.rewardCorrection);
+  }
+
+  referralReward(playerLevel, invitedPlayerLevel) {
+    return Math.round((120 + playerLevel * 25) * (1 + invitedPlayerLevel * 0.05));
+  }
+
+  eventReward(baseReward, eventMultiplier, playerLevel) {
+    return Math.round(baseReward * eventMultiplier * (1 + playerLevel * 0.05));
+  }
+
+  marketFee(amount, fee = 0.05) {
+    return Math.round(amount * fee);
+  }
+
+  analyzeAndBalance(metrics) {
+    const avgIncome = metrics.avgIncome ?? 0;
+    const targetIncome = metrics.targetIncome ?? 800;
+    const caseOpens = metrics.caseOpens ?? 0;
+    const sinkRate = metrics.sinkRate ?? 0.18;
+
+    const pressure = avgIncome / Math.max(targetIncome, 1);
+    this.dynamicState.inflationIndex = 0.8 * this.dynamicState.inflationIndex + 0.2 * pressure;
+
+    if (pressure > 1.3) {
+      this.dynamicState.upgradeCorrection = Math.min(1.9, this.dynamicState.upgradeCorrection + 0.04);
+      this.dynamicState.casePriceCorrection = Math.min(2.1, this.dynamicState.casePriceCorrection + 0.05);
+      this.dynamicState.rewardCorrection = Math.max(0.75, this.dynamicState.rewardCorrection - 0.03);
+      this.dynamicState.dropCorrection = Math.max(0.82, this.dynamicState.dropCorrection - 0.015);
+    } else if (pressure < 0.8) {
+      this.dynamicState.upgradeCorrection = Math.max(0.8, this.dynamicState.upgradeCorrection - 0.03);
+      this.dynamicState.casePriceCorrection = Math.max(0.82, this.dynamicState.casePriceCorrection - 0.04);
+      this.dynamicState.rewardCorrection = Math.min(1.4, this.dynamicState.rewardCorrection + 0.04);
+      this.dynamicState.dropCorrection = Math.min(1.2, this.dynamicState.dropCorrection + 0.02);
+    }
+
+    if (caseOpens > 140) this.dynamicState.dropCorrection *= 0.985;
+    if (sinkRate < 0.12) this.dynamicState.rewardCorrection *= 0.97;
+    return this.dynamicState;
+  }
 }
 
-export const FORMULAS = buildFormulaLibrary();
-
-export const ECON = {
-  auctionFee: 0.05,
-  minBidStep: 0.03,
-  antiSnipeMs: 30000,
-  cellUpgradeCost: (base, level, upgradeMultiplier = 1.15) => Math.floor(base * (upgradeMultiplier ** level)),
-  casePrice: (baseCasePrice, playerLevel, growthFactor = 0.06) => Math.floor(baseCasePrice * (1 + playerLevel * growthFactor)),
-  dailyReward: (base, streak) => Math.floor(base * (1 + streak * 0.12)),
-  animalIncome: (a, level = a.level || 1) => {
-    const statMultiplier = 1 + ((a.power || 1) + (a.speed || 1) + (a.luck || 1)) / 250;
-    const mutationMultiplier = ({ none: 1, Golden: 1.4, Albino: 1.25, Cyber: 1.55, Shadow: 1.7 }[a.mutation] || 1);
-    return a.baseIncome * (rarityMultipliers[a.rarity] || 1) * level * statMultiplier * mutationMultiplier;
-  },
-  zooIncome: (animals, zooLevelMultiplier = 1, prestigeMultiplier = 1) => animals.reduce((sum, a) => sum + ECON.animalIncome(a), 0) * zooLevelMultiplier * prestigeMultiplier,
-  demandFactor: (salesHistory, rarity) => {
-    const recent = salesHistory.filter((s) => s.at > Date.now() - DAY && s.rarity === rarity);
-    const buys = recent.length;
-    const sells = recent.filter((s) => s.side === 'sell').length || Math.max(1, Math.floor(recent.length * 0.4));
-    return Math.max(0.75, Math.min(1.45, 1 + (buys - sells) / 120));
-  },
-  averageSalePrice: (salesHistory, animalId = null, rarity = null) => {
-    const set = salesHistory.filter((s) => s.at > Date.now() - 30 * DAY && (!animalId || s.animal_id === animalId) && (!rarity || s.rarity === rarity));
-    if (!set.length) return 100;
-    return set.reduce((a, b) => a + b.price, 0) / set.length;
-  },
-  priceIndex: (animal, salesHistory) => {
-    const averageSalePrice = ECON.averageSalePrice(salesHistory, null, animal.rarity);
-    const demandFactor = ECON.demandFactor(salesHistory, animal.rarity);
-    const rarityMultiplier = rarityMultipliers[animal.rarity] || 1;
-    const statMultiplier = 1 + ((animal.power || 1) + (animal.speed || 1) + (animal.luck || 1)) / 300;
-    return averageSalePrice * demandFactor * rarityMultiplier * statMultiplier;
-  }
-};
+export const RARITY_MULTIPLIER = rarityMultiplier;
+export const MUTATION_MULTIPLIER = mutationMultiplier;

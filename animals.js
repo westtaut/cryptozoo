@@ -1,46 +1,52 @@
-export const rarityMultipliers = { common: 1, rare: 1.55, epic: 2.35, legendary: 4.6, mythic: 8.8, ultra: 24 };
-export const rarityColors = { common: 'var(--common)', rare: 'var(--rare)', epic: 'var(--epic)', legendary: 'var(--legendary)', mythic: 'var(--mythic)', ultra: 'var(--ultra)' };
-export const mutationBoosts = { none: 1, Golden: 1.4, Albino: 1.25, Cyber: 1.55, Shadow: 1.7 };
-
-let DB = [];
-
-export async function loadAnimalDatabase() {
-  if (DB.length) return DB;
-  const res = await fetch('./animals.json');
-  DB = await res.json();
-  return DB;
-}
-
-export function rollRarity() {
-  if (Math.random() < 0.0004) return 'ultra'; // <0.05%
-  const table = [['common', 60], ['rare', 25], ['epic', 10], ['legendary', 4], ['mythic', 1]];
-  const r = Math.random() * 100;
-  let acc = 0;
-  for (const [rarity, weight] of table) {
-    acc += weight;
-    if (r <= acc) return rarity;
+export class AnimalRegistry {
+  constructor(database) {
+    this.animals = database;
+    this.byId = new Map(database.map((a) => [a.id, a]));
+    this.byRarity = database.reduce((acc, item) => {
+      (acc[item.rarity] ??= []).push(item);
+      return acc;
+    }, {});
   }
-  return 'common';
-}
 
-export function generateAnimalFromRarity(rarity, pool = DB) {
-  const actualPool = rarity === 'ultra' ? pool.filter((a) => a.rarity === 'mythic') : pool.filter((a) => a.rarity === rarity);
-  const base = actualPool[Math.floor(Math.random() * actualPool.length)] || pool[0];
-  const mutation = Math.random() < 0.14 ? ['Golden', 'Albino', 'Cyber', 'Shadow'][Math.floor(Math.random() * 4)] : 'none';
-  const mut = mutationBoosts[mutation];
-  const rm = rarityMultipliers[rarity] || 1;
-  const roll = () => +(0.85 + Math.random() * 0.6).toFixed(2);
-  return {
-    id: crypto.randomUUID(),
-    ownerId: null,
-    locked: false,
-    level: 1,
-    ...base,
-    rarity,
-    mutation,
-    power: Math.floor(base.basePower * roll() * mut),
-    income: +(base.baseIncome * rm * roll() * mut).toFixed(2),
-    speed: +(base.baseSpeed * roll()).toFixed(2),
-    luck: +(base.baseLuck * roll()).toFixed(2)
-  };
+  getById(id) { return this.byId.get(id); }
+  getByRarity(rarity) { return this.byRarity[rarity] ?? []; }
+  randomByRarity(rarity, rng = Math.random) {
+    const list = this.getByRarity(rarity);
+    return list.length ? list[Math.floor(rng() * list.length)] : null;
+  }
+
+  generateInstance(base, ownerId) {
+    const roll = Math.random;
+    const mutation = this.rollMutation(roll());
+    const bonus = {
+      power: 1 + roll() * 0.35,
+      speed: 1 + roll() * 0.35,
+      luck: 1 + roll() * 0.35,
+      income: 1 + roll() * 0.35,
+    };
+    return {
+      uid: crypto.randomUUID(),
+      baseId: base.id,
+      ownerId,
+      level: 1,
+      rarity: base.rarity,
+      mutation,
+      stats: {
+        power: Math.round(base.basePower * bonus.power),
+        speed: Math.round(base.baseSpeed * bonus.speed),
+        luck: Math.round(base.baseLuck * bonus.luck),
+      },
+      baseIncome: Math.round(base.baseIncome * bonus.income),
+      createdAt: Date.now(),
+    };
+  }
+
+  rollMutation(v) {
+    if (v < 0.0005) return "Prismatic";
+    if (v < 0.01) return "Shadow";
+    if (v < 0.03) return "Cyber";
+    if (v < 0.06) return "Albino";
+    if (v < 0.1) return "Golden";
+    return "None";
+  }
 }

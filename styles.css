@@ -1,0 +1,156 @@
+:root {
+  --bg: radial-gradient(circle at top, #2f3f73, #121a2f 60%);
+  --panel: rgba(255, 255, 255, 0.12);
+  --panel-border: rgba(255, 255, 255, 0.25);
+  --text: #f4f7ff;
+  --text-soft: #cad3ec;
+  --accent: #4ea3ff;
+  --accent-2: #7ce7ff;
+  --danger: #ff6b7a;
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  --common: #8a909f;
+  --rare: #4f89ff;
+  --epic: #9d57ff;
+  --legendary: #f9b64b;
+  --mythic: linear-gradient(90deg, #ff4f9a, #ffc83d, #33e0ff);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Inter", "SF Pro Display", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app-shell {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 14px 88px;
+  gap: 14px;
+}
+
+.glass {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+}
+.top-bar h1 { margin: 0; font-size: 1.3rem; }
+.top-bar p { margin: 4px 0 0; color: var(--text-soft); }
+.currency-panel { display: flex; flex-direction: column; gap: 8px; text-align: right; }
+.currency-panel div { display: flex; gap: 8px; justify-content: flex-end; }
+
+.screen-container {
+  flex: 1;
+  display: grid;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.panel { padding: 14px; border-radius: 18px; }
+.btn, .btn-secondary {
+  border: none;
+  border-radius: 14px;
+  padding: 10px 14px;
+  color: #fff;
+  cursor: pointer;
+  transition: transform .16s ease, opacity .16s ease;
+}
+.btn { background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+.btn-secondary { background: rgba(255,255,255,0.14); }
+.btn:active, .btn-secondary:active { transform: scale(0.96); }
+
+.bottom-tabs {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 12px;
+  width: min(94vw, 460px);
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  padding: 8px;
+  gap: 6px;
+}
+.tab-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-soft);
+  border-radius: 12px;
+  font-size: 11px;
+  padding: 8px 4px;
+}
+.tab-btn.active {
+  background: rgba(255,255,255,.15);
+  color: var(--text);
+  border-color: rgba(255,255,255,.24);
+}
+
+.zoo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.zoo-cell {
+  min-height: 118px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.08);
+  border: 1px dashed rgba(255,255,255,0.2);
+  padding: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.zoo-cell.pop::after {
+  content: "+🪙";
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  animation: float .8s ease forwards;
+}
+@keyframes float { from {opacity:1; transform:translateY(0);} to {opacity:0; transform:translateY(-20px);} }
+
+.animal-card {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 16px;
+  background: rgba(14, 21, 43, .65);
+  border: 1px solid rgba(255,255,255, .16);
+}
+.animal-card .emoji { font-size: 30px; }
+.animal-card h3 { margin: 0; font-size: 14px; }
+.animal-card p { margin: 2px 0; color: var(--text-soft); font-size: 12px; }
+.animal-card .action { margin-left: auto; }
+
+.rarity-common { box-shadow: 0 0 0 1px var(--common); }
+.rarity-rare { box-shadow: 0 0 14px color-mix(in srgb, var(--rare), transparent 58%); }
+.rarity-epic { box-shadow: 0 0 18px color-mix(in srgb, var(--epic), transparent 55%); }
+.rarity-legendary { box-shadow: 0 0 22px color-mix(in srgb, var(--legendary), transparent 48%); }
+.rarity-mythic { box-shadow: 0 0 24px rgba(255, 96, 176, 0.55); border-image: var(--mythic) 1; }
+
+.case-roulette {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(80px, 1fr);
+  gap: 10px;
+  overflow: hidden;
+  padding: 8px;
+}
+.roulette-item { text-align: center; padding: 10px; border-radius: 12px; background: rgba(255,255,255,0.08); }
+
+@media (max-width: 380px) {
+  .bottom-tabs { grid-template-columns: repeat(3, 1fr); }
+}
