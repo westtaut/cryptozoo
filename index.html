@@ -3,86 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>ZooChain Tycoon</title>
+  <title>CryptoZoo iOS Market</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="app" class="app-shell">
     <header class="topbar glass">
-      <div>
-        <h1>🦁 ZooChain Tycoon</h1>
-        <small id="tgUser">Telegram Mini App</small>
-      </div>
-      <div class="wallet">
-        <span>🪙 <b id="coins">0</b></span>
-        <span>🧬 <b id="token">0</b></span>
-        <span>⚡ <b id="energy">0</b></span>
-      </div>
+      <div><h1>🦁 CryptoZoo</h1><small id="tgUserEl">Telegram Mini App</small></div>
+      <div class="wallet"><span>🪙 <b id="coins">0</b></span><span>🧬 <b id="token">0</b></span><span>⚡ <b id="energy">0</b></span></div>
     </header>
 
-    <nav class="tabs glass">
-      <button data-tab="zoo" class="tab active">Zoo</button>
-      <button data-tab="cases" class="tab">Cases</button>
-      <button data-tab="market" class="tab">Market</button>
-      <button data-tab="pvp" class="tab">PvP</button>
-      <button data-tab="leaders" class="tab">Leaders</button>
-      <button data-tab="settings" class="tab">Settings</button>
-    </nav>
-
     <main>
-      <section id="zoo" class="panel active">
-        <div class="headline">
-          <h2>Zoo Map</h2>
-          <button id="claimDaily" class="primary">Daily Reward</button>
-        </div>
-        <div id="zooStats" class="stats-row"></div>
-        <div id="zooGrid" class="zoo-grid"></div>
-        <h3>Your Collection</h3>
-        <div id="inventory" class="card-grid"></div>
-      </section>
-
-      <section id="cases" class="panel">
-        <div class="headline"><h2>Case Opening</h2></div>
-        <div id="caseList" class="card-grid"></div>
-        <div id="roulette" class="roulette"></div>
-      </section>
-
-      <section id="market" class="panel">
-        <div class="headline">
-          <h2>P2P Marketplace</h2>
-          <button id="refreshMarket" class="ghost">Refresh</button>
-        </div>
-        <div class="filters">
-          <select id="fRarity"></select>
-          <select id="fSort"></select>
-        </div>
-        <div id="marketList" class="card-grid"></div>
-        <h3>Create Listing</h3>
-        <div id="sellForm" class="glass card"></div>
-      </section>
-
-      <section id="pvp" class="panel">
-        <h2>PvP Arena</h2>
-        <p class="muted">Select 3 animals and fight async rival squads.</p>
-        <div id="pvpRoster" class="card-grid"></div>
-        <button id="fightBtn" class="primary">Battle (⚡10)</button>
-        <div id="battleLog" class="glass card"></div>
-      </section>
-
-      <section id="leaders" class="panel">
-        <h2>Leaderboard</h2>
-        <div id="leaderboard" class="glass card"></div>
-      </section>
-
-      <section id="settings" class="panel">
-        <h2>Themes</h2>
-        <div id="themes" class="card-grid"></div>
-      </section>
+      <section id="map" class="panel active"><h2>Zoo Map</h2><div id="zooGrid" class="zoo-grid"></div></section>
+      <section id="cases" class="panel"><h2>Cases</h2><div id="caseList" class="card-grid"></div><div id="roulette" class="roulette"></div></section>
+      <section id="animals" class="panel"><h2>Animals</h2><div id="inventory" class="card-grid"></div><div id="animalsList" class="card-grid"></div></section>
+      <section id="market" class="panel"><div class="headline"><h2>Market</h2><button id="refreshMarket" class="ghost">Refresh</button></div><div class="filters"><select id="fRarity"></select><select id="fSort"></select></div><div id="marketList" class="card-grid"></div><div id="sellForm" class="card glass"></div><div id="priceCharts" class="card-grid"></div></section>
+      <section id="auction" class="panel"><h2>Auction</h2><div id="auctionList" class="card-grid"></div></section>
+      <section id="pvp" class="panel"><h2>PvP</h2><div id="pvpRoster" class="card-grid"></div><button id="fightBtn" class="primary">Battle</button><div id="battleLog" class="card glass"></div></section>
+      <section id="leaderboard" class="panel"><h2>Leaderboard</h2><div id="leadersList" class="card glass"></div></section>
+      <section id="daily" class="panel"><h2>Daily</h2><button id="claimDailyBtn" class="primary">Claim</button><div id="dailyPanel"></div></section>
+      <section id="settings" class="panel"><h2>Settings / Themes</h2><div id="themes" class="card-grid"></div></section>
     </main>
+
+    <nav class="tabs glass bottom-nav">
+      <button data-tab="map" class="tab active">Map</button><button data-tab="cases" class="tab">Cases</button><button data-tab="animals" class="tab">Animals</button><button data-tab="market" class="tab">Market</button><button data-tab="auction" class="tab">Auction</button><button data-tab="pvp" class="tab">PvP</button><button data-tab="leaderboard" class="tab">Leaderboard</button><button data-tab="daily" class="tab">Daily</button><button data-tab="settings" class="tab">Settings</button>
+    </nav>
   </div>
-
-  <div id="modal" class="modal hidden"><div id="modalBody" class="glass card"></div></div>
-
   <script type="module" src="app.js"></script>
 </body>
 </html>
