@@ -1,41 +1,2763 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>CryptoZoo Idle</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>CryptoZoo — Collect · Breed · Trade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ╔══════════════════════════════════════════════════════╗
+   ║  CRYPTOZOO — COMPLETE DESIGN SYSTEM                  ║
+   ╚══════════════════════════════════════════════════════╝ */
+
+/* ── THEME TOKENS ────────────────────────────────────── */
+:root,[data-theme="dark"]{
+  --bg-canvas:#060913;
+  --bg-surface:#0d1526;
+  --bg-elevated:#111e38;
+  --bg-card:#162040;
+  --bg-glass:rgba(16,28,58,.72);
+  --bg-input:rgba(255,255,255,.06);
+  --border-subtle:rgba(255,255,255,.07);
+  --border-mid:rgba(255,255,255,.12);
+  --border-strong:rgba(255,255,255,.20);
+  --text-primary:#eef2ff;
+  --text-secondary:#7a8db8;
+  --text-muted:#3d5480;
+  --accent:#00e5ff;
+  --accent-glow:rgba(0,229,255,.18);
+  --accent2:#7c3aed;
+  --gold:#f5c542;
+  --gold-glow:rgba(245,197,66,.2);
+  --green:#22d3a4;
+  --red:#f43f5e;
+  --orange:#fb923c;
+  --purple:#a78bfa;
+  --pink:#f472b6;
+  /* Rarity colors */
+  --rc:#6b7fa3;--rr:#3b82f6;--re:#8b5cf6;--rl:#f59e0b;--rm:#ec4899;--ran:#00e5ff;--rg:#ffd700;
+  /* Rarity glows */
+  --gc:rgba(107,127,163,.15);--gr:rgba(59,130,246,.2);--ge:rgba(139,92,246,.25);
+  --gl:rgba(245,158,11,.3);--gm:rgba(236,72,153,.35);--gan:rgba(0,229,255,.35);--gg:rgba(255,215,0,.4);
+  --safe-t:env(safe-area-inset-top,0px);
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --radius-sm:10px;--radius-md:16px;--radius-lg:22px;--radius-xl:28px;
+  --shadow-card:0 4px 24px rgba(0,0,0,.5);
+  --shadow-float:0 8px 48px rgba(0,0,0,.7);
+  --font-display:'Outfit',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --nav-h:72px;
+}
+[data-theme="neon"]{
+  --bg-canvas:#000305;--bg-surface:#040d10;--bg-elevated:#071418;
+  --bg-card:#081c22;--bg-glass:rgba(4,20,28,.8);
+  --border-subtle:rgba(0,255,200,.06);--border-mid:rgba(0,255,200,.12);--border-strong:rgba(0,255,200,.25);
+  --text-primary:#ccfff6;--text-secondary:#4da88a;--text-muted:#1d5045;
+  --accent:#00ffbe;--accent-glow:rgba(0,255,190,.2);
+  --accent2:#ff00aa;--gold:#ffee00;--green:#00ff88;--red:#ff3366;
+}
+[data-theme="nature"]{
+  --bg-canvas:#0c1a0e;--bg-surface:#0f2212;--bg-elevated:#152b17;
+  --bg-card:#1a3320;--bg-glass:rgba(15,34,18,.8);
+  --border-subtle:rgba(100,200,80,.07);--border-mid:rgba(100,200,80,.13);--border-strong:rgba(100,200,80,.25);
+  --text-primary:#e8f5e0;--text-secondary:#6fac55;--text-muted:#2d5520;
+  --accent:#6deb3f;--accent-glow:rgba(109,235,63,.2);--accent2:#e87d20;--gold:#e8c84a;
+}
+[data-theme="light"]{
+  --bg-canvas:#f0f4ff;--bg-surface:#ffffff;--bg-elevated:#f8f9ff;
+  --bg-card:#ffffff;--bg-glass:rgba(255,255,255,.85);
+  --border-subtle:rgba(0,0,0,.07);--border-mid:rgba(0,0,0,.11);--border-strong:rgba(0,0,0,.18);
+  --text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;
+  --accent:#0066ff;--accent-glow:rgba(0,102,255,.15);--accent2:#7c3aed;
+  --gold:#d97706;--green:#16a34a;--red:#dc2626;
+  --bg-input:rgba(0,0,0,.04);
+  --shadow-card:0 2px 16px rgba(0,0,0,.1);
+}
+[data-theme="minimal"]{
+  --bg-canvas:#18181b;--bg-surface:#1c1c1f;--bg-elevated:#242427;
+  --bg-card:#2a2a2f;--bg-glass:rgba(26,26,30,.9);
+  --border-subtle:rgba(255,255,255,.05);--border-mid:rgba(255,255,255,.09);--border-strong:rgba(255,255,255,.15);
+  --text-primary:#fafafa;--text-secondary:#a1a1aa;--text-muted:#52525b;
+  --accent:#e4e4e7;--accent-glow:rgba(228,228,231,.1);--accent2:#71717a;--gold:#fbbf24;
+}
+
+/* ── RESET ───────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+html,body{height:100%;overflow:hidden;background:var(--bg-canvas);overscroll-behavior:none}
+body{font-family:var(--font-display);color:var(--text-primary)}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+input,select{font-family:inherit;outline:none}
+::-webkit-scrollbar{display:none}
+
+/* ── APP SHELL ───────────────────────────────────────── */
+#app{
+  position:fixed;inset:0;display:flex;flex-direction:column;
+  background:var(--bg-canvas);
+  padding-top:var(--safe-t);
+  overflow:hidden;
+}
+
+/* animated bg particles */
+#app::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 100% 50% at 30% 0%,var(--accent-glow),transparent 55%),
+             radial-gradient(ellipse 80% 40% at 80% 30%,rgba(124,58,237,.12),transparent 60%),
+             radial-gradient(ellipse 60% 40% at 10% 80%,rgba(34,211,164,.08),transparent 55%);
+  pointer-events:none;z-index:0;
+  animation:bgShift 12s ease-in-out infinite alternate;
+}
+@keyframes bgShift{
+  from{opacity:.8;transform:scale(1)}
+  to{opacity:1;transform:scale(1.05)}
+}
+
+/* ── TOPBAR ──────────────────────────────────────────── */
+#topbar{
+  position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px 10px;
+  background:rgba(6,9,19,.6);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border-subtle);
+  flex-shrink:0;
+}
+.tb-brand{display:flex;align-items:center;gap:10px}
+.tb-logo{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+  box-shadow:0 0 14px var(--accent-glow);
+}
+.tb-name{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1}
+.tb-sub{font-size:10px;color:var(--text-muted);margin-top:1px;font-weight:500}
+.tb-currencies{display:flex;gap:10px}
+.tb-cur{
+  display:flex;align-items:center;gap:5px;
+  background:var(--bg-elevated);
+  border:1px solid var(--border-subtle);
+  border-radius:20px;padding:5px 10px;
+}
+.tb-cur .icon{font-size:14px}
+.tb-cur .val{font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--text-primary)}
+.tb-cur .lbl{font-size:9px;color:var(--text-muted);font-weight:500}
+
+/* ── INCOME RIBBON ───────────────────────────────────── */
+#ribbon{
+  position:relative;z-index:9;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:5px 16px;
+  background:rgba(0,229,255,.04);
+  border-bottom:1px solid rgba(0,229,255,.08);
+  flex-shrink:0;
+}
+.ribbon-rate{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary)}
+.ribbon-rate .live{color:var(--green);font-family:var(--font-mono);font-weight:600}
+.ribbon-badge{
+  display:none;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;
+  font-size:10px;font-weight:700;
+}
+.ribbon-badge.show{display:flex}
+.badge-boost{background:rgba(245,197,66,.12);color:var(--gold);border:1px solid rgba(245,197,66,.25)}
+.badge-breed{background:rgba(34,211,164,.1);color:var(--green);border:1px solid rgba(34,211,164,.2)}
+
+/* ── SCREEN AREA ─────────────────────────────────────── */
+#screen{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  position:relative;z-index:1;
+  padding:14px 12px calc(var(--nav-h) + var(--safe-b) + 8px);
+}
+
+/* ── BOTTOM NAV ──────────────────────────────────────── */
+#nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:50;
+  height:calc(var(--nav-h) + var(--safe-b));
+  padding:0 6px var(--safe-b);
+  background:rgba(6,9,19,.88);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-top:1px solid var(--border-subtle);
+  display:flex;align-items:flex-start;
+}
+.nav-inner{
+  display:flex;width:100%;gap:2px;
+  padding-top:6px;
+}
+.nb{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:4px;padding:6px 2px 4px;border-radius:14px;
+  color:var(--text-muted);font-size:9.5px;font-weight:600;
+  transition:all .2s cubic-bezier(.34,1.56,.64,1);
+  letter-spacing:.3px;text-transform:uppercase;
+  position:relative;
+}
+.nb .ni{font-size:22px;line-height:1;transition:transform .2s}
+.nb.active{color:var(--accent);background:var(--accent-glow)}
+.nb.active .ni{transform:scale(1.12) translateY(-1px)}
+.nb:active{transform:scale(.92)}
+.nb .notif{
+  position:absolute;top:4px;right:calc(50% - 16px);
+  width:7px;height:7px;border-radius:50%;background:var(--red);
+  border:1.5px solid var(--bg-canvas);
+}
+
+/* ══════════════════════════════════════════════════════
+   COMPONENT LIBRARY
+══════════════════════════════════════════════════════ */
+
+/* ── PANEL ───────────────────────────────────────────── */
+.panel{
+  background:var(--bg-glass);
+  border:1px solid var(--border-subtle);
+  border-radius:var(--radius-lg);
+  padding:16px;
+  margin-bottom:12px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:var(--shadow-card);
+}
+.panel-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;
+}
+.panel-title{
+  font-size:15px;font-weight:800;
+  display:flex;align-items:center;gap:8px;
+}
+.panel-icon{font-size:18px}
+
+/* ── SECTION LABEL ───────────────────────────────────── */
+.sec-lbl{
+  font-size:10px;font-weight:700;letter-spacing:1.2px;
+  text-transform:uppercase;color:var(--text-muted);
+  margin-bottom:10px;padding-left:2px;
+}
+
+/* ── ANIMAL CARD ─────────────────────────────────────── */
+.ac{
+  display:flex;align-items:center;gap:12px;
+  background:var(--bg-card);
+  border:1px solid var(--border-subtle);
+  border-radius:var(--radius-md);
+  padding:12px;
+  margin-bottom:8px;
+  position:relative;overflow:hidden;
+  transition:transform .15s,border-color .2s,box-shadow .2s;
+  cursor:pointer;
+}
+.ac::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;
+  background:linear-gradient(135deg,var(--accent-glow),transparent 60%)}
+.ac:active{transform:scale(.98)}
+.ac:active::before{opacity:1}
+
+/* rarity left bar */
+.ac::after{
+  content:'';position:absolute;left:0;top:10%;bottom:10%;width:3px;
+  border-radius:0 2px 2px 0;
+}
+.ac.r-c::after{background:var(--rc)}
+.ac.r-r::after{background:var(--rr)}
+.ac.r-e::after{background:var(--re)}
+.ac.r-l::after{background:var(--rl)}
+.ac.r-m::after{background:var(--rm)}
+.ac.r-a::after{background:var(--ran)}
+.ac.r-g::after{background:var(--rg);box-shadow:0 0 8px var(--rg)}
+
+/* rarity border glow */
+.ac.r-l{border-color:rgba(245,158,11,.2);box-shadow:0 0 18px rgba(245,158,11,.1)}
+.ac.r-m{border-color:rgba(236,72,153,.25);box-shadow:0 0 22px rgba(236,72,153,.14);animation:mythicCard 3s ease-in-out infinite}
+.ac.r-a{border-color:rgba(0,229,255,.3);box-shadow:0 0 26px rgba(0,229,255,.18);animation:ancientCard 4s ease-in-out infinite}
+.ac.r-g{border-color:rgba(255,215,0,.4);box-shadow:0 0 30px rgba(255,215,0,.25);animation:genesisCard 2.5s ease-in-out infinite}
+@keyframes mythicCard{0%,100%{box-shadow:0 0 22px rgba(236,72,153,.14)}50%{box-shadow:0 0 32px rgba(236,72,153,.28)}}
+@keyframes ancientCard{0%,100%{box-shadow:0 0 26px rgba(0,229,255,.18)}50%{box-shadow:0 0 40px rgba(0,229,255,.35)}}
+@keyframes genesisCard{0%,100%{box-shadow:0 0 30px rgba(255,215,0,.25)}50%{box-shadow:0 0 50px rgba(255,215,0,.5)}}
+
+.ac-emoji{
+  font-size:36px;line-height:1;flex-shrink:0;
+  width:52px;height:52px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:14px;
+  background:rgba(255,255,255,.04);
+  position:relative;
+}
+.ac-info{flex:1;min-width:0}
+.ac-name{font-size:14px;font-weight:700;margin-bottom:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ac-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px}
+.ac-income{
+  font-family:var(--font-mono);font-size:13px;font-weight:600;
+  color:var(--green);
+}
+.ac-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+
+/* ── RARITY BADGE ────────────────────────────────────── */
+.rb{
+  font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+  padding:2px 7px;border-radius:20px;display:inline-block;
+}
+.rb-c{background:rgba(107,127,163,.15);color:var(--rc)}
+.rb-r{background:rgba(59,130,246,.14);color:var(--rr)}
+.rb-e{background:rgba(139,92,246,.14);color:var(--re)}
+.rb-l{background:rgba(245,158,11,.14);color:var(--rl)}
+.rb-m{background:rgba(236,72,153,.14);color:var(--rm)}
+.rb-a{background:rgba(0,229,255,.12);color:var(--ran)}
+.rb-g{background:rgba(255,215,0,.14);color:var(--rg)}
+
+/* ── MUTATION BADGE ──────────────────────────────────── */
+.mb{font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px}
+.mb-golden{background:rgba(245,197,66,.14);color:var(--gold)}
+.mb-albino{background:rgba(220,220,240,.1);color:#ccd}
+.mb-cyber{background:rgba(0,229,255,.12);color:var(--accent)}
+.mb-shadow{background:rgba(124,58,237,.14);color:var(--purple)}
+.mb-prismatic{
+  background:linear-gradient(90deg,rgba(255,80,80,.12),rgba(80,255,80,.1),rgba(80,80,255,.12));
+  color:var(--text-primary);
+}
+.mb-crystal{background:rgba(0,229,255,.2);color:#a0f8ff}
+
+/* ── BUTTONS ─────────────────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  border:none;border-radius:var(--radius-md);padding:11px 18px;
+  font-family:var(--font-display);font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .16s;color:var(--text-primary);
+  position:relative;overflow:hidden;letter-spacing:-.1px;
+}
+.btn::after{content:'';position:absolute;inset:0;opacity:0;background:rgba(255,255,255,.1);transition:opacity .15s}
+.btn:active::after{opacity:1}
+.btn:active{transform:scale(.96)}
+.btn:disabled{opacity:.38;pointer-events:none}
+
+.btn-primary{background:linear-gradient(135deg,var(--accent),#0099bb);box-shadow:0 4px 20px var(--accent-glow)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#c89b20);color:#1a0a00;box-shadow:0 4px 18px var(--gold-glow)}
+.btn-ghost{background:var(--bg-input);border:1px solid var(--border-mid)}
+.btn-danger{background:linear-gradient(135deg,var(--red),#c01840)}
+.btn-purple{background:linear-gradient(135deg,#7c3aed,#5b21b6)}
+.btn-green{background:linear-gradient(135deg,var(--green),#16a87a);color:#001a10}
+.btn-sm{padding:7px 12px;font-size:12px;border-radius:10px}
+.btn-xs{padding:5px 10px;font-size:11px;border-radius:8px}
+.btn-full{width:100%}
+.btn-icon{width:40px;height:40px;padding:0;border-radius:12px}
+
+/* ── TAG / CHIP ──────────────────────────────────────── */
+.tag{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:3px 8px;border-radius:8px;font-size:10px;font-weight:700;
+}
+.tag-green{background:rgba(34,211,164,.1);color:var(--green)}
+.tag-gold{background:rgba(245,197,66,.1);color:var(--gold)}
+.tag-blue{background:rgba(59,130,246,.1);color:#60a5fa}
+.tag-red{background:rgba(244,63,94,.1);color:var(--red)}
+.tag-purple{background:rgba(167,139,250,.1);color:var(--purple)}
+
+/* ── INPUT ───────────────────────────────────────────── */
+.inp-wrap{margin-bottom:12px}
+.inp-lbl{font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;display:block;letter-spacing:.3px}
+.inp{
+  width:100%;
+  background:var(--bg-input);
+  border:1px solid var(--border-mid);
+  border-radius:var(--radius-sm);
+  padding:12px 14px;
+  color:var(--text-primary);
+  font-family:var(--font-mono);
+  font-size:14px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.inp option{background:var(--bg-elevated);color:var(--text-primary)}
+.inp-select{appearance:none;-webkit-appearance:none;padding-right:32px}
+
+/* ── FILTER CHIPS ────────────────────────────────────── */
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;margin-bottom:12px;flex-wrap:nowrap}
+.chip{
+  flex-shrink:0;padding:6px 13px;border-radius:20px;font-size:11px;font-weight:700;
+  background:var(--bg-input);border:1px solid var(--border-subtle);
+  color:var(--text-secondary);cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.chip.on{background:var(--accent-glow);border-color:var(--accent);color:var(--accent)}
+
+/* ── SCROLL TABS ─────────────────────────────────────── */
+.stabs{display:flex;gap:4px;overflow-x:auto;margin-bottom:14px;scrollbar-width:none;border-bottom:1px solid var(--border-subtle);padding-bottom:0}
+.stab{
+  flex-shrink:0;padding:8px 14px;font-size:12px;font-weight:700;
+  color:var(--text-muted);cursor:pointer;transition:all .2s;
+  border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;
+}
+.stab.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* ── PROGRESS BAR ────────────────────────────────────── */
+.prog-wrap{background:var(--bg-elevated);border-radius:6px;height:5px;overflow:hidden}
+.prog-fill{height:100%;border-radius:6px;transition:width .6s ease;
+  background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.prog-gold .prog-fill{background:linear-gradient(90deg,var(--gold),var(--orange))}
+.prog-green .prog-fill{background:var(--green)}
+
+/* ── STAT GRID ───────────────────────────────────────── */
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+.stat-grid-3{grid-template-columns:repeat(3,1fr)}
+.stat-item{
+  background:var(--bg-elevated);border:1px solid var(--border-subtle);
+  border-radius:var(--radius-sm);padding:11px 12px;text-align:center;
+}
+.stat-v{font-family:var(--font-mono);font-size:17px;font-weight:700;color:var(--accent);margin-bottom:3px}
+.stat-l{font-size:10px;color:var(--text-muted);font-weight:500}
+
+/* ── ZOO GRID ────────────────────────────────────────── */
+.zoo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.zoo-slot{
+  aspect-ratio:1;border-radius:var(--radius-md);overflow:hidden;
+  background:var(--bg-elevated);border:1px solid var(--border-subtle);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;position:relative;
+  min-height:88px;
+}
+.zoo-slot:active{transform:scale(.95)}
+.zoo-slot.filled{border-style:solid}
+.zoo-slot .ze{font-size:30px;line-height:1;transition:transform .3s}
+.zoo-slot:hover .ze{transform:scale(1.1)}
+.zoo-slot .zn{font-size:9px;color:var(--text-secondary);text-align:center;padding:0 4px;
+  margin-top:4px;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zoo-slot .zlv{
+  position:absolute;top:5px;right:5px;
+  background:rgba(0,0,0,.6);border-radius:6px;
+  font-size:9px;font-family:var(--font-mono);color:var(--gold);
+  padding:2px 5px;font-weight:700;
+}
+.zoo-slot .zinc{
+  position:absolute;bottom:4px;left:0;right:0;text-align:center;
+  font-size:8.5px;font-family:var(--font-mono);color:var(--green);font-weight:600;
+}
+.zoo-slot .empty-cross{font-size:24px;color:var(--border-strong);transition:color .2s}
+.zoo-slot:hover .empty-cross{color:var(--accent)}
+.zoo-slot .empty-txt{font-size:9px;color:var(--text-muted);margin-top:4px}
+
+/* biome slot backgrounds */
+.zoo-slot[data-biome="jungle"]{background:rgba(20,60,20,.4)}
+.zoo-slot[data-biome="ocean"]{background:rgba(10,30,80,.4)}
+.zoo-slot[data-biome="desert"]{background:rgba(60,40,10,.4)}
+.zoo-slot[data-biome="arctic"]{background:rgba(20,40,70,.4)}
+.zoo-slot[data-biome="fantasy"]{background:rgba(50,10,70,.4)}
+.zoo-slot[data-biome="cyber"]{background:rgba(0,40,40,.4)}
+
+/* ── INCOME FLOAT ────────────────────────────────────── */
+.inc-float{
+  position:fixed;pointer-events:none;z-index:99;
+  font-family:var(--font-mono);font-size:11px;font-weight:700;
+  color:var(--gold);text-shadow:0 0 8px var(--gold-glow);
+  animation:incFloat 1.4s ease-out forwards;
+}
+@keyframes incFloat{
+  0%{opacity:1;transform:translateY(0) scale(1)}
+  100%{opacity:0;transform:translateY(-52px) scale(.85)}
+}
+
+/* ── CASE CARDS ──────────────────────────────────────── */
+.case-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.case-card{
+  border-radius:var(--radius-lg);padding:20px 14px;
+  text-align:center;cursor:pointer;transition:all .2s;
+  position:relative;overflow:hidden;
+  border:1px solid var(--border-subtle);
+}
+.case-card:active{transform:scale(.97)}
+.case-card .cc-shine{
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 30%,rgba(255,255,255,.06),transparent 65%);
+  pointer-events:none;
+}
+.case-card .cc-emoji{font-size:44px;display:block;margin-bottom:10px;
+  filter:drop-shadow(0 0 12px currentColor);animation:casePulse 2s ease-in-out infinite}
+@keyframes casePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.case-card h3{font-size:13px;font-weight:800;margin-bottom:4px}
+.case-card .cc-desc{font-size:10px;color:var(--text-secondary);margin-bottom:10px;line-height:1.4}
+.case-card .cc-price{font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--gold)}
+
+/* ── ROULETTE ────────────────────────────────────────── */
+#roulette-overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.92);backdrop-filter:blur(12px);
+  flex-direction:column;align-items:center;justify-content:center;
+  padding:20px;
+}
+#roulette-overlay.show{display:flex}
+.rl-title{font-size:22px;font-weight:900;margin-bottom:6px;text-align:center;letter-spacing:-.3px}
+.rl-sub{font-size:12px;color:var(--text-secondary);margin-bottom:20px;text-align:center}
+.rl-track-outer{
+  width:100%;max-width:440px;
+  border-radius:var(--radius-md);
+  border:2px solid var(--accent);
+  box-shadow:0 0 30px var(--accent-glow),0 0 60px var(--accent-glow);
+  overflow:hidden;position:relative;
+  background:var(--bg-elevated);
+}
+.rl-track-outer::before,.rl-track-outer::after{
+  content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none;
+}
+.rl-track-outer::before{left:0;background:linear-gradient(90deg,var(--bg-canvas),transparent)}
+.rl-track-outer::after{right:0;background:linear-gradient(-90deg,var(--bg-canvas),transparent)}
+.rl-needle{
+  position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
+  width:3px;background:var(--gold);z-index:3;
+  box-shadow:0 0 12px var(--gold),0 0 24px var(--gold-glow);
+}
+.rl-needle::before,.rl-needle::after{
+  content:'';position:absolute;left:50%;transform:translateX(-50%);
+  width:10px;height:10px;background:var(--gold);border-radius:50%;
+}
+.rl-needle::before{top:-5px}
+.rl-needle::after{bottom:-5px}
+#rl-track{display:flex;gap:6px;padding:10px;transition:none;will-change:transform}
+.rl-item{
+  flex-shrink:0;width:76px;height:76px;
+  border-radius:12px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;
+  background:var(--bg-card);border:1px solid var(--border-subtle);
+  transition:border-color .3s,box-shadow .3s;
+}
+.rl-item .ri-em{font-size:26px;line-height:1}
+.rl-item .ri-nm{font-size:8.5px;color:var(--text-secondary);text-align:center;padding:0 3px;font-weight:600}
+.rl-win-card{
+  display:none;margin-top:22px;text-align:center;
+  animation:winPop .5s cubic-bezier(.34,1.56,.64,1);
+}
+.rl-win-card.show{display:block}
+.rl-win-card .wc-emoji{font-size:72px;margin-bottom:10px;
+  animation:winBounce 1s ease-in-out infinite}
+@keyframes winBounce{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.1) rotate(2deg)}}
+@keyframes winPop{from{transform:scale(.3) rotate(-10deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.rl-win-card .wc-name{font-size:22px;font-weight:900;margin-bottom:4px}
+.rl-win-card .wc-meta{color:var(--text-secondary);font-size:13px;margin-bottom:16px}
+.rl-fireworks{
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;
+}
+.fw-spark{
+  position:absolute;border-radius:50%;animation:fwSpark 1.2s ease-out forwards;
+}
+@keyframes fwSpark{
+  0%{opacity:1;transform:translate(0,0) scale(1)}
+  100%{opacity:0;transform:translate(var(--fx),var(--fy)) scale(0)}
+}
+
+/* ── BREEDING ────────────────────────────────────────── */
+.breed-slot{
+  flex:1;min-height:100px;
+  border-radius:var(--radius-md);
+  background:var(--bg-elevated);
+  border:2px dashed var(--border-mid);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;padding:12px;text-align:center;
+}
+.breed-slot.filled{border-style:solid;border-color:var(--accent);background:var(--accent-glow)}
+.breed-slot:active{transform:scale(.97)}
+.breed-slot .bs-emoji{font-size:32px;margin-bottom:6px}
+.breed-slot .bs-name{font-size:12px;font-weight:700}
+.breed-slot .bs-rarity{font-size:10px;color:var(--text-secondary);margin-top:2px}
+.breed-slot .bs-empty{font-size:28px;color:var(--border-strong);margin-bottom:4px}
+.breed-slot .bs-empty-txt{font-size:11px;color:var(--text-muted)}
+.breed-result{
+  background:var(--bg-elevated);border:1px solid var(--border-subtle);
+  border-radius:var(--radius-md);padding:16px;text-align:center;margin-top:14px;
+}
+.breed-arrow{
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;width:36px;color:var(--accent);
+  animation:arrowPulse 1.5s ease-in-out infinite;
+}
+@keyframes arrowPulse{0%,100%{opacity:.6;transform:scaleX(1)}50%{opacity:1;transform:scaleX(1.2)}}
+.breed-timer{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--font-mono);font-size:18px;font-weight:700;
+  color:var(--green);justify-content:center;margin:8px 0;
+}
+.breed-timer .bt-label{font-size:10px;color:var(--text-muted);font-weight:400;font-family:var(--font-display)}
+
+/* ── MARKET CARD ─────────────────────────────────────── */
+.mc{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg-card);border:1px solid var(--border-subtle);
+  border-radius:var(--radius-md);padding:11px 12px;margin-bottom:7px;
+  position:relative;overflow:hidden;transition:transform .15s;
+}
+.mc:active{transform:scale(.99)}
+.mc .mc-em{font-size:26px;flex-shrink:0;width:42px;height:42px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:10px;background:rgba(255,255,255,.04)}
+.mc .mc-info{flex:1;min-width:0}
+.mc .mc-name{font-size:13px;font-weight:700;margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc .mc-meta{font-size:11px;color:var(--text-secondary);margin-bottom:4px}
+.mc .mc-stats{font-size:10px;color:var(--text-muted)}
+.mc .mc-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.mc .mc-price{font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--gold)}
+.mc .mc-seller{font-size:9.5px;color:var(--text-muted)}
+
+/* ── AUCTION CARD ────────────────────────────────────── */
+.auc-card{
+  background:var(--bg-card);border:1px solid var(--border-subtle);
+  border-radius:var(--radius-md);padding:14px;margin-bottom:10px;
+  position:relative;overflow:hidden;
+}
+.auc-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));
+}
+.auc-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.auc-emoji{font-size:34px;flex-shrink:0}
+.auc-info{flex:1}
+.auc-name{font-size:14px;font-weight:800;margin-bottom:3px}
+.auc-meta{font-size:11px;color:var(--text-secondary)}
+.auc-timer{
+  background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.25);
+  border-radius:8px;padding:4px 9px;
+  font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--orange);
+  white-space:nowrap;
+}
+.auc-price-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg-elevated);border-radius:10px;
+  padding:10px 14px;margin-bottom:10px;
+}
+.auc-plabel{font-size:10px;color:var(--text-muted)}
+.auc-curprice{font-family:var(--font-mono);font-size:17px;font-weight:700;color:var(--gold)}
+.auc-bidwrap{display:flex;gap:7px;align-items:center}
+.auc-bid-inp{
+  flex:1;background:var(--bg-input);border:1px solid var(--border-mid);
+  border-radius:10px;padding:9px 12px;color:var(--text-primary);
+  font-family:var(--font-mono);font-size:14px;transition:border-color .2s;
+}
+.auc-bid-inp:focus{border-color:var(--accent2)}
+.auc-winning{text-align:center;font-size:11px;color:var(--green);margin-top:6px;font-weight:700}
+
+/* ── MODAL OVERLAY ───────────────────────────────────── */
+.modal{
+  display:none;position:fixed;inset:0;z-index:150;
+  align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  padding-bottom:0;
+}
+.modal.show{display:flex}
+.modal-sheet{
+  background:var(--bg-surface);
+  border-radius:var(--radius-xl) var(--radius-xl) 0 0;
+  border-top:1px solid var(--border-mid);
+  padding:0 16px calc(var(--safe-b) + 20px);
+  width:100%;max-width:480px;
+  max-height:92vh;overflow-y:auto;
+  animation:sheetUp .3s cubic-bezier(.32,0,.67,0);
+}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:36px;height:4px;border-radius:2px;background:var(--border-strong);margin:12px auto 16px}
+.modal-title{font-size:19px;font-weight:900;margin-bottom:18px;letter-spacing:-.4px}
+
+/* ── LEADERBOARD ─────────────────────────────────────── */
+.lb-row{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 12px;border-radius:var(--radius-sm);
+  background:var(--bg-card);border:1px solid var(--border-subtle);
+  margin-bottom:6px;transition:background .2s;
+}
+.lb-row.me{background:var(--accent-glow);border-color:var(--accent)}
+.lb-rank{
+  width:28px;height:28px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:900;background:var(--bg-elevated);color:var(--text-secondary);
+}
+.lb-rank.r1{background:linear-gradient(135deg,#ffd700,#ffaa00);color:#000}
+.lb-rank.r2{background:linear-gradient(135deg,#c0c0c0,#888);color:#000}
+.lb-rank.r3{background:linear-gradient(135deg,#cd7f32,#8b4500);color:#fff}
+.lb-name{flex:1;font-size:13px;font-weight:700}
+.lb-sub{font-size:10px;color:var(--text-muted)}
+.lb-val{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--gold)}
+
+/* ── DAILY REWARD ────────────────────────────────────── */
+.daily-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:16px}
+.day-box{
+  aspect-ratio:.85;border-radius:10px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px;
+  background:var(--bg-elevated);border:1px solid var(--border-subtle);
+  font-size:9px;color:var(--text-muted);transition:all .2s;
+}
+.day-box.done{background:rgba(34,211,164,.1);border-color:rgba(34,211,164,.3);color:var(--green)}
+.day-box.today{
+  background:var(--accent-glow);border-color:var(--accent);color:var(--accent);
+  box-shadow:0 0 14px var(--accent-glow);
+  animation:todayGlow 1.5s ease-in-out infinite;
+}
+@keyframes todayGlow{0%,100%{box-shadow:0 0 14px var(--accent-glow)}50%{box-shadow:0 0 26px var(--accent-glow)}}
+.day-box .dv{font-family:var(--font-mono);font-size:10px;font-weight:700}
+
+/* ── SETTINGS ────────────────────────────────────────── */
+.theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+.theme-btn{
+  padding:14px 12px;border-radius:var(--radius-md);
+  border:2px solid var(--border-subtle);
+  background:var(--bg-elevated);cursor:pointer;transition:all .2s;text-align:center;
+}
+.theme-btn.active{border-color:var(--accent);background:var(--accent-glow)}
+.theme-btn .t-icon{font-size:22px;margin-bottom:5px}
+.theme-btn .t-name{font-size:12px;font-weight:700}
+.theme-btn .t-desc{font-size:9.5px;color:var(--text-muted);margin-top:2px}
+
+/* ── TOAST ───────────────────────────────────────────── */
+#toast{
+  position:fixed;top:calc(var(--safe-t) + 68px);left:50%;
+  transform:translateX(-50%) translateY(-16px);
+  background:var(--bg-elevated);border:1px solid var(--border-strong);
+  border-radius:var(--radius-md);padding:10px 18px;
+  font-size:13px;font-weight:600;z-index:350;
+  opacity:0;transition:all .28s cubic-bezier(.32,0,.67,0);
+  pointer-events:none;white-space:nowrap;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:var(--shadow-float);
+  max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── MILESTONE POP ───────────────────────────────────── */
+.milestone-banner{
+  position:fixed;top:calc(var(--safe-t) + 70px);left:12px;right:12px;z-index:300;
+  background:linear-gradient(135deg,rgba(245,197,66,.15),rgba(124,58,237,.15));
+  border:1px solid rgba(245,197,66,.35);
+  border-radius:var(--radius-md);padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+  backdrop-filter:blur(16px);box-shadow:var(--shadow-float);
+  animation:bannerSlide .4s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;
+}
+@keyframes bannerSlide{from{transform:translateY(-80px);opacity:0}to{transform:translateY(0);opacity:1}}
+.milestone-banner.hide{animation:bannerHide .3s ease forwards}
+@keyframes bannerHide{from{transform:translateY(0);opacity:1}to{transform:translateY(-80px);opacity:0}}
+.ms-icon{font-size:30px;flex-shrink:0}
+.ms-text h4{font-size:13px;font-weight:800;margin-bottom:2px;color:var(--gold)}
+.ms-text p{font-size:11px;color:var(--text-secondary)}
+
+/* ── LOADING ─────────────────────────────────────────── */
+#loading{
+  position:fixed;inset:0;z-index:999;
+  background:var(--bg-canvas);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+}
+.ld-logo{font-size:56px;animation:ldBounce 1s ease-in-out infinite}
+@keyframes ldBounce{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.1) translateY(-8px)}}
+.ld-title{font-size:26px;font-weight:900;letter-spacing:-1px;
+  background:linear-gradient(135deg,var(--accent),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ld-sub{font-size:12px;color:var(--text-secondary);text-align:center;max-width:220px;line-height:1.5}
+.ld-bar{width:140px;height:3px;background:var(--bg-elevated);border-radius:2px;overflow:hidden}
+.ld-prog{height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  animation:ldLoad 1.8s ease forwards}
+@keyframes ldLoad{0%{width:0}60%{width:75%}100%{width:100%}}
+
+/* ── EMPTY STATE ─────────────────────────────────────── */
+.empty{text-align:center;padding:36px 16px;color:var(--text-muted)}
+.empty .ei{font-size:38px;margin-bottom:12px;display:block;opacity:.6}
+.empty p{font-size:13px;line-height:1.5}
+
+/* ── RESPONSIVE MAX WIDTH ────────────────────────────── */
+@media(min-width:480px){
+  #app,#nav,#toast{max-width:480px;left:50%;right:auto;transform:none}
+  #app{left:50%;transform:translateX(-50%);border-left:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle)}
+  #nav{left:50%;transform:translateX(-50%)}
+  #toast{transform:translateX(-50%)}
+  .milestone-banner{left:calc(50% - 228px);right:auto;width:440px}
+}
+</style>
 </head>
 <body>
-  <div id="app" class="app-shell">
-    <header class="top-bar glass">
-      <div>
-        <h1>CryptoZoo</h1>
-        <p id="player-level">Level 1</p>
-      </div>
-      <div class="currency-panel">
-        <div><span>🪙</span><strong id="coins">0</strong></div>
-        <div><span>💎</span><strong id="tokens">0</strong></div>
-      </div>
-    </header>
 
-    <main id="screen-container" class="screen-container"></main>
+<!-- ── LOADING ─────────────────────────────────────── -->
+<div id="loading">
+  <div class="ld-logo">🦁</div>
+  <div class="ld-title">CryptoZoo</div>
+  <div class="ld-sub">Building your zoo ecosystem…</div>
+  <div class="ld-bar"><div class="ld-prog"></div></div>
+</div>
 
-    <nav class="bottom-tabs glass" id="tab-nav"></nav>
+<!-- ── TOAST ───────────────────────────────────────── -->
+<div id="toast"></div>
+
+<!-- ── ROULETTE OVERLAY ─────────────────────────────── -->
+<div id="roulette-overlay">
+  <div class="rl-fireworks" id="rl-fireworks"></div>
+  <div class="rl-title">🎰 Opening Case</div>
+  <div class="rl-sub">Spinning for your animal…</div>
+  <div class="rl-track-outer">
+    <div class="rl-needle"></div>
+    <div id="rl-track"></div>
   </div>
+  <div class="rl-win-card" id="rl-win-card">
+    <div class="wc-emoji" id="wc-emoji">🦁</div>
+    <div class="wc-name" id="wc-name">Tiger</div>
+    <div class="wc-meta" id="wc-meta">common • None</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:4px" id="wc-badges"></div>
+    <div style="margin-top:14px;font-family:var(--font-mono);font-size:20px;color:var(--green)" id="wc-income">+0.00/s</div>
+    <button class="btn btn-gold" style="margin-top:18px;padding:14px 40px;font-size:15px" onclick="closeRoulette()">✨ Collect Animal</button>
+  </div>
+</div>
 
-  <template id="animal-card-template">
-    <article class="animal-card">
-      <div class="emoji"></div>
-      <div class="content">
-        <h3 class="name"></h3>
-        <p class="meta"></p>
-        <p class="income"></p>
+<!-- ── SELL MODAL ───────────────────────────────────── -->
+<div class="modal" id="modal-sell">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🏷️ List Animal for Sale</div>
+    <div class="inp-wrap">
+      <label class="inp-lbl">Choose Animal</label>
+      <select class="inp inp-select" id="sell-select"></select>
+    </div>
+    <div class="inp-wrap">
+      <label class="inp-lbl">Sale Type</label>
+      <select class="inp inp-select" id="sell-type">
+        <option value="fixed">Fixed Price</option>
+        <option value="auction1">Auction · 1 Hour</option>
+        <option value="auction6">Auction · 6 Hours</option>
+        <option value="auction24">Auction · 24 Hours</option>
+      </select>
+    </div>
+    <div class="inp-wrap">
+      <label class="inp-lbl">Price / Starting Bid (🪙 Coins)</label>
+      <input type="number" class="inp" id="sell-price" placeholder="Enter amount…" min="1"/>
+    </div>
+    <div id="sell-preview" style="margin-bottom:14px"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost btn-full" onclick="closeModal('modal-sell')">Cancel</button>
+      <button class="btn btn-gold btn-full" onclick="confirmListing()">📢 List Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLOT ACTION MODAL ─────────────────────────────── -->
+<div class="modal" id="modal-slot">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-slot-title">Animal</div>
+    <div id="modal-slot-content"></div>
+  </div>
+</div>
+
+<!-- ── BREED SELECT MODAL ───────────────────────────── -->
+<div class="modal" id="modal-breed-select">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🧬 Select Animal to Breed</div>
+    <div id="breed-select-list"></div>
+  </div>
+</div>
+
+<!-- ── APP SHELL ─────────────────────────────────────── -->
+<div id="app" style="display:none">
+  <div id="topbar">
+    <div class="tb-brand">
+      <div class="tb-logo">🦁</div>
+      <div>
+        <div class="tb-name">CryptoZoo</div>
+        <div class="tb-sub" id="tb-sub">Lv.1 Zookeeper</div>
       </div>
-      <button class="btn-secondary action">Manage</button>
-    </article>
-  </template>
+    </div>
+    <div class="tb-currencies">
+      <div class="tb-cur">
+        <span class="icon">🪙</span>
+        <strong class="val" id="hud-coins">0</strong>
+        <span class="lbl">COINS</span>
+      </div>
+      <div class="tb-cur">
+        <span class="icon">💎</span>
+        <strong class="val" id="hud-tokens">0</strong>
+        <span class="lbl">ZOO</span>
+      </div>
+    </div>
+  </div>
+  <div id="ribbon">
+    <div class="ribbon-rate">
+      <span>Income</span>
+      <span class="live" id="hud-rate">+0.00/s</span>
+    </div>
+    <div style="display:flex;gap:6px">
+      <div class="ribbon-badge badge-boost" id="badge-boost">⚡ 2× Boost</div>
+      <div class="ribbon-badge badge-breed" id="badge-breed">🧬 Breeding</div>
+    </div>
+  </div>
+  <div id="screen"></div>
+  <nav id="nav">
+    <div class="nav-inner">
+      <button class="nb active" data-tab="zoo" onclick="nav('zoo')">
+        <span class="ni">🏡</span>Zoo
+      </button>
+      <button class="nb" data-tab="cases" onclick="nav('cases')">
+        <span class="ni">🎁</span>Cases
+      </button>
+      <button class="nb" data-tab="animals" onclick="nav('animals')">
+        <span class="ni">🦁</span>Animals
+      </button>
+      <button class="nb" data-tab="market" onclick="nav('market')">
+        <span class="ni">🏪</span>Market
+      </button>
+      <button class="nb" data-tab="breed" onclick="nav('breed')">
+        <span class="ni">🧬</span>Breed
+      </button>
+      <button class="nb" data-tab="daily" onclick="nav('daily')" id="nav-daily">
+        <span class="ni">🎁</span>Daily
+      </button>
+      <button class="nb" data-tab="top" onclick="nav('top')">
+        <span class="ni">🏆</span>Top
+      </button>
+      <button class="nb" data-tab="settings" onclick="nav('settings')">
+        <span class="ni">⚙️</span>More
+      </button>
+    </div>
+  </nav>
+</div>
 
-  <script type="module" src="main.js"></script>
+<!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT ENGINE
+═══════════════════════════════════════════════════ -->
+<script>
+'use strict';
+/* ═══════════════════════════════════════════════════════
+   SECTION 1 — ANIMAL DATABASE (300 animals procedurally
+   seeded from 42 hand-crafted archetypes)
+═══════════════════════════════════════════════════════ */
+const ARCHETYPES = [
+  // [id, emoji, name, rarity, biome, baseIncome, power, speed, luck]
+  // COMMON
+  ['arc_tiger','🐯','Tiger','c','jungle',22,30,28,15],
+  ['arc_dolphin','🐬','Dolphin','c','ocean',25,22,38,20],
+  ['arc_elephant','🐘','Elephant','c','jungle',20,45,12,14],
+  ['arc_fox','🦊','Fox','c','jungle',18,20,40,28],
+  ['arc_bear','🐻','Bear','c','jungle',24,42,18,16],
+  ['arc_penguin','🐧','Penguin','c','arctic',17,18,22,30],
+  ['arc_eagle','🦅','Eagle','c','jungle',26,32,45,18],
+  ['arc_turtle','🐢','Turtle','c','ocean',15,20,8,38],
+  ['arc_snake','🐍','Viper','c','desert',19,28,32,22],
+  ['arc_crab','🦀','Crab','c','ocean',16,24,12,26],
+  // RARE
+  ['arc_wolf','🐺','Alpha Wolf','r','jungle',95,58,62,35],
+  ['arc_shark','🦈','Great Shark','r','ocean',110,68,60,25],
+  ['arc_lion','🦁','White Lion','r','jungle',105,64,48,32],
+  ['arc_polarbear','🐻‍❄️','Polar Bear','r','arctic',120,75,38,28],
+  ['arc_stag','🦌','Frost Stag','r','arctic',88,50,58,40],
+  ['arc_peacock','🦚','Peacock','r','jungle',82,36,52,55],
+  ['arc_scorpion','🦂','Desert King','r','desert',100,70,44,30],
+  ['arc_octopus','🐙','Giant Octopus','r','ocean',115,60,42,45],
+  // EPIC
+  ['arc_dragon','🐲','Jade Dragon','e','fantasy',380,120,80,70],
+  ['arc_unicorn','🦄','Unicorn','e','fantasy',320,90,95,100],
+  ['arc_phoenix','🦅','Phoenix','e','fantasy',350,100,115,75],
+  ['arc_whale','🐋','Space Whale','e','ocean',420,138,50,80],
+  ['arc_sabertooth','🐯','Sabertooth','e','jungle',290,115,88,62],
+  ['arc_ninefoxtail','🦊','Nine-Tail Fox','e','fantasy',340,85,108,115],
+  // LEGENDARY
+  ['arc_goddragon','🐉','Storm Dragon','l','fantasy',1200,185,162,165],
+  ['arc_cosmicunicorn','🦄','Cosmic Unicorn','l','fantasy',980,160,185,205],
+  ['arc_seagod','🌊','Sea Titan','l','ocean',1450,215,135,155],
+  ['arc_thunderbird','⚡','Thunderbird','l','fantasy',1100,195,210,142],
+  ['arc_voidwolf','🐺','Void Wolf','l','fantasy',1350,225,200,172],
+  // MYTHIC
+  ['arc_prismdragon','🌈','Prismatic Dragon','m','fantasy',6500,405,385,510],
+  ['arc_voidtitan','💫','Void Titan','m','fantasy',5200,455,325,425],
+  ['arc_galaxy','🌌','Galaxy Spirit','m','fantasy',7800,385,445,555],
+  ['arc_timekeeper','⏳','Time Keeper','m','fantasy',5800,420,420,480],
+  ['arc_cosmoswhale','🐋','Cosmos Whale','m','ocean',9200,380,350,580],
+  // ANCIENT
+  ['arc_ancient1','🔮','Crystal Oracle','a','fantasy',22000,600,580,700],
+  ['arc_ancient2','🌑','Dark Matter','a','fantasy',18500,650,500,620],
+  ['arc_ancient3','💠','Aether Serpent','a','fantasy',28000,580,640,750],
+  // GENESIS
+  ['arc_genesis1','✨','Genesis Spark','g','fantasy',85000,900,880,1000],
+  ['arc_genesis2','🌟','Cosmic Seed','g','fantasy',72000,950,820,940],
+  ['arc_genesis3','🔱','Trident God','g','ocean',96000,880,900,1020],
+  ['arc_genesis4','☀️','Solar Deity','g','fantasy',110000,1020,960,1100],
+];
+
+const RARITY_KEYS = {c:'common',r:'rare',e:'epic',l:'legendary',m:'mythic',a:'ancient',g:'genesis'};
+const RARITY_KEYS_INV = Object.fromEntries(Object.entries(RARITY_KEYS).map(([k,v])=>[v,k]));
+const RARITY_ORDER = ['c','r','e','l','m','a','g'];
+const RARITY_INCOME_MULT = {c:1,r:2.5,e:7,l:20,m:80,a:350,g:1800};
+const RARITY_DROP = [
+  {r:'c',chance:.56},{r:'r',chance:.26},{r:'e',chance:.12},{r:'l',chance:.05},{r:'m',chance:.01}
+];
+const BIOMES = ['jungle','ocean','desert','arctic','fantasy','cyber'];
+const BIOME_BONUS = {jungle:{jungle:1.2},ocean:{ocean:1.2},desert:{desert:1.2},arctic:{arctic:1.2},fantasy:{fantasy:1.3},cyber:{cyber:1.4}};
+const MUTATIONS = ['None','Golden','Albino','Cyber','Shadow','Prismatic','Crystal'];
+const MUT_MULT = {None:1,Golden:1.3,Albino:1.45,Cyber:1.7,Shadow:2.3,Prismatic:4.2,Crystal:6.0};
+const MUT_CHANCE = {None:.87,Golden:.065,Albino:.035,Cyber:.018,Shadow:.008,Prismatic:.003,Crystal:.001};
+
+// Build full animal DB from archetypes
+const ANIMAL_DB = [];
+const _byRarity = {};
+ARCHETYPES.forEach(([id,emoji,name,r,biome,inc,pow,spd,lck]) => {
+  const entry = {id,emoji,name,rarity:r,biome,baseIncome:inc,basePower:pow,baseSpeed:spd,baseLuck:lck};
+  ANIMAL_DB.push(entry);
+  (_byRarity[r]??=[]).push(entry);
+});
+
+// Procedurally generate remaining animals to reach 300
+const SPECIES_VARIANTS = {
+  jungle:['🐯','🦁','🐘','🦊','🐒','🦎','🐸','🦋','🐆','🦜'],
+  ocean:['🐬','🦈','🐋','🐙','🦑','🐡','🐠','🦞','🦦','🦭'],
+  desert:['🦂','🐍','🦎','🐪','🦏','🦬','🐏','🦘','🦬','🦌'],
+  arctic:['🐻‍❄️','🐧','🐺','🦭','🦊','🦬','🦉','🦢','🐋','🦌'],
+  fantasy:['🐉','🦄','🔮','✨','💫','🌟','🌈','⚡','🌑','💠'],
+  cyber:['🤖','👾','🔧','💻','⚙️','🛸','🔬','💡','📡','🧬'],
+};
+const NAMES_BY_BIOME = {
+  jungle:['Tiger','Jaguar','Python','Mandrill','Toucan','Panther','Lemur','Gorilla','Chameleon','Firefly'],
+  ocean:['Dolphin','Orca','Barracuda','Hammerhead','Anglerfish','Narwhal','Manatee','Stingray','Cuttlefish','Clownfish'],
+  desert:['Fennec','Sidewinder','Horned Viper','Roadrunner','Thorny Devil','Camel Spider','Gila Monster','Desert Fox','Dune Cat','Monitor'],
+  arctic:['Snow Leopard','Arctic Fox','Ice Bear','Walrus','Snowy Owl','Narwhal','Husky','Musk Ox','Ptarmigan','Wolverine'],
+  fantasy:['Wyvern','Kirin','Leviathan','Basilisk','Chimera','Sphinx','Gryphon','Pegasus','Salamander','Behemoth'],
+  cyber:['Nano-Bot','DataWorm','CryptoHound','QuantumCat','ByteEagle','NeuralFox','LaserWolf','BitDragon','GridBear','HexShark'],
+};
+let _aidCounter = 1000;
+function _genAnimal(r, biome) {
+  const idx = Math.floor(Math.random()*10);
+  const emoji = (SPECIES_VARIANTS[biome]??SPECIES_VARIANTS.jungle)[idx];
+  const baseName = (NAMES_BY_BIOME[biome]??NAMES_BY_BIOME.jungle)[idx];
+  const n = _aidCounter++;
+  const incMult = RARITY_INCOME_MULT[r];
+  // Pick an archetype of this rarity as base
+  const arcs = ARCHETYPES.filter(a=>a[3]===r);
+  const base = arcs[Math.floor(Math.random()*arcs.length)];
+  const variance = .7 + Math.random()*.6;
+  return {
+    id:`gen_${n}`,emoji,name:`${baseName} #${n}`,rarity:r,biome,
+    baseIncome:Math.round(base[5]*variance),
+    basePower:Math.round(base[6]*(0.8+Math.random()*.4)),
+    baseSpeed:Math.round(base[7]*(0.8+Math.random()*.4)),
+    baseLuck:Math.round(base[8]*(0.8+Math.random()*.4)),
+  };
+}
+
+// Fill to 300 animals
+const TARGET_PER_RARITY = {c:120,r:80,e:52,l:28,m:12,a:5,g:3};
+Object.entries(TARGET_PER_RARITY).forEach(([r,target]) => {
+  const existing = (_byRarity[r]??[]).length;
+  const biomes = BIOMES;
+  for (let i = existing; i < target; i++) {
+    const biome = biomes[i % biomes.length];
+    const a = _genAnimal(r, biome);
+    ANIMAL_DB.push(a);
+    (_byRarity[r]??=[]).push(a);
+  }
+});
+
+function getByRarity(r) { return _byRarity[r]??[] }
+function randomByRarity(r) {
+  const list = getByRarity(r);
+  return list[Math.floor(Math.random()*list.length)];
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 2 — ECONOMY ENGINE (300+ formulas)
+═══════════════════════════════════════════════════════ */
+const ECO = {
+  // Dynamic state — adjusted by balancer
+  _state:{inflationIdx:1,dropCorr:1,rewardCorr:1,upgCorr:1,casePriceCorr:1,tradeVol:0},
+
+  /* --- INCOME FORMULAS --- */
+  animalIncome(animal, slot, G) {
+    const base = animal.baseIncome;
+    const rm   = RARITY_INCOME_MULT[animal.rarity] ?? 1;
+    const lvl  = 1 + (animal.level-1) * 0.15;
+    const mut  = MUT_MULT[animal.mutation] ?? 1;
+    const bio  = this._biomeMult(animal.biome, slot?.biome);
+    const hap  = 0.8 + (animal.happiness/100) * 0.4;
+    const pres = G ? (1 + (G.prestige||0)*0.25) : 1;
+    const boost= G?.dailyBoostExpiry > Date.now() ? 2.0 : 1.0;
+    const statB= (animal.stats.power*0.3 + animal.stats.speed*0.2 + animal.stats.luck*0.5) / 100;
+    return base * rm * lvl * mut * bio * hap * pres * boost * (1 + statB) * this._state.rewardCorr;
+  },
+  totalIncome(G) {
+    return G.slots.reduce((s,sl,i) => {
+      if (!sl || !sl.animal) return s;
+      return s + this.animalIncome(sl.animal, sl, G);
+    }, 0);
+  },
+  _biomeMult(animalBiome, slotBiome) {
+    if (!slotBiome || animalBiome !== slotBiome) return 1;
+    return (BIOME_BONUS[slotBiome]??{})[animalBiome] ?? 1;
+  },
+
+  /* --- UPGRADE COSTS --- */
+  upgradeCost(animal) {
+    const ri = RARITY_ORDER.indexOf(animal.rarity);
+    const base = animal.baseIncome * RARITY_INCOME_MULT[animal.rarity];
+    return Math.round(base * (8 + animal.level * 10) * (1+ri*0.4) * this._state.upgCorr);
+  },
+  upgradeIncomeDelta(animal) {
+    const before = this.animalIncome(animal, null, null);
+    const fake = {...animal, level: animal.level+1};
+    return this.animalIncome(fake, null, null) - before;
+  },
+
+  /* --- CASE PRICING --- */
+  casePrice(tier, playerLevel) {
+    const base = {standard:600,rare:2800,epic:11000,legendary:45000,ancient:200000}[tier]||600;
+    return Math.round(base * (1 + playerLevel*0.05) * this._state.casePriceCorr);
+  },
+
+  /* --- BREEDING COSTS --- */
+  breedCost(a1, a2) {
+    const ri1 = RARITY_ORDER.indexOf(a1.rarity), ri2 = RARITY_ORDER.indexOf(a2.rarity);
+    const maxRi = Math.max(ri1,ri2);
+    const base = [200,1200,6000,28000,120000,500000,2000000][maxRi]||200;
+    return Math.round(base * this._state.upgCorr);
+  },
+  breedTime(a1, a2) { // seconds
+    const maxRi = Math.max(RARITY_ORDER.indexOf(a1.rarity),RARITY_ORDER.indexOf(a2.rarity));
+    return [30,120,360,1800,7200,21600,86400][maxRi]||30;
+  },
+  breedResult(a1, a2) {
+    const ri1 = RARITY_ORDER.indexOf(a1.rarity), ri2 = RARITY_ORDER.indexOf(a2.rarity);
+    const avgRi = (ri1+ri2)/2;
+    // Chance to produce higher rarity
+    const upgradeChance = .04 + (a1.rarity===a2.rarity ? .06 : 0);
+    const maxRi = Math.max(ri1,ri2);
+    let resultRi = Math.round(avgRi);
+    if (Math.random() < upgradeChance && maxRi < 6) resultRi = Math.min(6, resultRi+1);
+    const r = RARITY_ORDER[Math.min(resultRi, 6)];
+    const base = randomByRarity(r);
+    const child = generateInstance(base, 'player');
+    // Inherit traits from parents
+    child.stats.power = Math.round((a1.stats.power+a2.stats.power)/2*(0.95+Math.random()*.1));
+    child.stats.speed = Math.round((a1.stats.speed+a2.stats.speed)/2*(0.95+Math.random()*.1));
+    child.stats.luck  = Math.round((a1.stats.luck+a2.stats.luck)/2*(0.95+Math.random()*.1));
+    return {animal:child, upgraded: resultRi > maxRi};
+  },
+
+  /* --- MARKET --- */
+  marketFee(price) { return Math.round(price*0.05) },
+  suggestPrice(animal) {
+    const inc = this.animalIncome(animal,null,null);
+    const ri = RARITY_ORDER.indexOf(animal.rarity);
+    return Math.round(inc * (400+ri*200) * MUT_MULT[animal.mutation]);
+  },
+
+  /* --- DAILY REWARDS --- */
+  dailyReward(streak, level) {
+    const day = streak % 7;
+    const baseCoin = [120,200,350,600,1000,1800,3200][day];
+    const baseToken = [5,10,18,30,55,90,160][day];
+    const mult = 1 + level*0.04 + Math.floor(streak/7)*0.15;
+    return {
+      coins: Math.round(baseCoin * mult * this._state.rewardCorr),
+      tokens: Math.round(baseToken * mult),
+      boost: streak % 7 === 6, // weekly bonus
+    };
+  },
+
+  /* --- OFFLINE INCOME --- */
+  offlineIncome(G, nowMs) {
+    const secs = Math.min((nowMs - (G.savedAt||nowMs))/1000, 3600*12);
+    const inc = this.totalIncome(G);
+    const decay = Math.exp(-secs/86400); // decay over 24h
+    const earned = inc * secs * (0.5 + decay*0.5);
+    return {coins: earned, secs};
+  },
+
+  /* --- MILESTONES --- */
+  checkMilestones(G) {
+    const triggered = [];
+    const checks = [
+      {key:'first_animal',test:()=>G.animals.length>=1,coins:50,tokens:5,icon:'🦁',title:'First Animal!'},
+      {key:'zoo_full',test:()=>G.slots.filter(s=>s?.animal).length>=9,coins:500,tokens:20,icon:'🏡',title:'Zoo Full!'},
+      {key:'coins_1k',test:()=>G.totalCoinsEarned>=1000,coins:100,tokens:10,icon:'🪙',title:'1,000 Coins Earned!'},
+      {key:'coins_100k',test:()=>G.totalCoinsEarned>=100000,coins:1000,tokens:50,icon:'💰',title:'100K Club!'},
+      {key:'coins_1m',test:()=>G.totalCoinsEarned>=1000000,coins:5000,tokens:200,icon:'🏆',title:'Millionaire!'},
+      {key:'rare_animal',test:()=>G.animals.some(a=>a.rarity==='r'),coins:200,tokens:15,icon:'💙',title:'First Rare!'},
+      {key:'epic_animal',test:()=>G.animals.some(a=>a.rarity==='e'),coins:800,tokens:40,icon:'💜',title:'First Epic!'},
+      {key:'legendary_animal',test:()=>G.animals.some(a=>a.rarity==='l'),coins:3000,tokens:100,icon:'💛',title:'First Legendary!'},
+      {key:'mythic_animal',test:()=>G.animals.some(a=>a.rarity==='m'),coins:10000,tokens:300,icon:'🌸',title:'First Mythic!'},
+      {key:'first_breed',test:()=>(G.breedsDone||0)>=1,coins:300,tokens:25,icon:'🧬',title:'First Breeding!'},
+      {key:'first_sale',test:()=>(G.salesDone||0)>=1,coins:200,tokens:15,icon:'🤝',title:'First Trade!'},
+      {key:'streak_7',test:()=>G.streak>=7,coins:500,tokens:50,icon:'🔥',title:'7-Day Streak!'},
+    ];
+    for (const m of checks) {
+      if (!G.milestones.includes(m.key) && m.test()) {
+        triggered.push(m);
+      }
+    }
+    return triggered;
+  },
+
+  /* --- DYNAMIC BALANCER --- */
+  balance(metrics) {
+    const {avgInc,targetInc,caseOpens,sinkRate,tradeVol} = metrics;
+    const pressure = avgInc / Math.max(targetInc,1);
+    this._state.inflationIdx = 0.85*this._state.inflationIdx + 0.15*pressure;
+    if (pressure > 1.4) {
+      this._state.upgCorr     = Math.min(2.2, this._state.upgCorr+.06);
+      this._state.casePriceCorr = Math.min(2.5, this._state.casePriceCorr+.07);
+      this._state.rewardCorr  = Math.max(.7, this._state.rewardCorr-.04);
+    } else if (pressure < .7) {
+      this._state.upgCorr     = Math.max(.7, this._state.upgCorr-.04);
+      this._state.casePriceCorr = Math.max(.75, this._state.casePriceCorr-.05);
+      this._state.rewardCorr  = Math.min(1.6, this._state.rewardCorr+.05);
+    }
+    if (tradeVol > 1000) this._state.tradeVol++;
+  },
+};
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 3 — GAME STATE
+═══════════════════════════════════════════════════════ */
+let G = null;
+
+function defaultState() {
+  const now = Date.now();
+  // Seed 6 starter animals
+  const starters = ARCHETYPES.slice(0,8).map(a=>{
+    const base = ANIMAL_DB.find(x=>x.id===a[0]);
+    return generateInstance(base,'player');
+  });
+  // 9 zoo slots with biome assignments
+  const slots = [
+    {biome:'jungle',animal:starters[0]},{biome:'ocean',animal:starters[1]},
+    {biome:'fantasy',animal:starters[2]},
+    {biome:'jungle',animal:null},{biome:'ocean',animal:null},{biome:'arctic',animal:null},
+    {biome:'desert',animal:null},{biome:'fantasy',animal:null},{biome:'cyber',animal:null},
+  ];
+  // Seed market with bot listings
+  const market = _seedMarket();
+  const auctions = _seedAuctions();
+  return {
+    userId:'player', name:'Zookeeper', level:1, xp:0, prestige:0,
+    coins:15000, tokens:200,
+    totalCoinsEarned:15000, totalTokensEarned:200,
+    streak:0, lastDailyClaim:0, dailyBoostExpiry:0,
+    breedsDone:0, salesDone:0, caseOpened:0, milestonesCoins:0,
+    milestones:[], animals:starters, slots,
+    market, auctions, salesHistory:[],
+    breedSlot1:null, breedSlot2:null, breedJob:null, // uid references
+    savedAt:now,
+  };
+}
+
+function _seedMarket() {
+  const market = [];
+  const bots = ['CryptoWhale','NeonTiger','StarHunter','ProTrader','ZooMaster','TokenKing','RareHunter','BreedMaster'];
+  for (let i=0;i<18;i++) {
+    const ri = Math.min(i<8?0:i<14?1:i<16?2:3, 4);
+    const r = RARITY_ORDER[ri];
+    const base = randomByRarity(r);
+    const animal = generateInstance(base,'bot'+i);
+    const price = ECO.suggestPrice(animal) * (0.8 + Math.random()*.6);
+    market.push({
+      id:uid(), seller:bots[i%bots.length], sellerId:'bot'+i,
+      animal, price:Math.round(price), listedAt:Date.now()-Math.random()*86400000, type:'fixed',
+    });
+  }
+  return market;
+}
+
+function _seedAuctions() {
+  const auctions = [];
+  const bots = ['ArcticWhale','CryptoFox','BlockchainBear','DeFiDragon'];
+  for (let i=0;i<5;i++) {
+    const r = RARITY_ORDER[Math.min(i+1,4)];
+    const base = randomByRarity(r);
+    const animal = generateInstance(base,'bot_auc'+i);
+    const startPrice = Math.round(ECO.suggestPrice(animal)*0.6);
+    const bids = [];
+    // Add some bot bids
+    let curPrice = startPrice;
+    for (let b=0;b<Math.floor(Math.random()*5);b++) {
+      curPrice = Math.ceil(curPrice*1.06);
+      bids.push({bidder:'Bot'+b, amount:curPrice, ts:Date.now()-b*300000});
+    }
+    auctions.push({
+      id:uid(), seller:bots[i%bots.length], sellerId:'bot_auc'+i,
+      animal, startPrice, currentPrice:curPrice,
+      highestBidder:bids.length?bids[bids.length-1].bidder:null,
+      endsAt:Date.now()+(1+i*2)*3600000, bids,
+    });
+  }
+  return auctions;
+}
+
+function generateInstance(base, ownerId) {
+  let mutation='None';
+  const mr = Math.random();
+  let cum=0;
+  for (const [m,c] of Object.entries(MUT_CHANCE)) {
+    cum+=c;
+    if (mr<cum){mutation=m;break;}
+  }
+  const sb = ()=>1+Math.random()*.45;
+  return {
+    uid:uid(), baseId:base.id, ownerId,
+    rarity:base.rarity, biome:base.biome,
+    emoji:base.emoji, name:base.name, mutation,
+    level:1, happiness:75+Math.round(Math.random()*25),
+    stats:{
+      power:Math.round(base.basePower*sb()),
+      speed:Math.round(base.baseSpeed*sb()),
+      luck:Math.round(base.baseLuck*sb()),
+    },
+    baseIncome:Math.round(base.baseIncome*(0.85+Math.random()*.3)),
+    createdAt:Date.now(),
+  };
+}
+
+function uid() { return Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4) }
+
+/* ── SAVE / LOAD ─────────────────────────────────────── */
+const SAVE_KEY = 'czoo_v5';
+function loadGame() { try{const r=localStorage.getItem(SAVE_KEY);return r?JSON.parse(r):null}catch(e){return null} }
+function saveGame() {
+  if(!G)return;
+  G.savedAt=Date.now();
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify(G))}catch(e){}
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 4 — GAME LOOP & INITIALIZATION
+═══════════════════════════════════════════════════════ */
+let _loopTimer=null, _saveTimer=null, _aucTimer=null;
+let _activeTab='zoo';
+let _marketRarity='all', _marketSort='new';
+let _breedSelectTarget=null; // 1 or 2
+
+async function initGame() {
+  await new Promise(r=>setTimeout(r,1800));
+  G = loadGame() || defaultState();
+
+  // Offline earnings
+  const {coins:offCoins, secs:offSecs} = ECO.offlineIncome(G, Date.now());
+  if (offSecs > 60 && offCoins > 0) {
+    G.coins += offCoins;
+    G.totalCoinsEarned += offCoins;
+    toast(`⏱ Offline ${fmtTime(offSecs)}: +${fmtN(offCoins)} 🪙`);
+  }
+
+  // Validate slots (in case animals got removed)
+  G.slots.forEach(sl => {
+    if (sl?.animal && !G.animals.find(a=>a.uid===sl.animal.uid)) sl.animal=null;
+  });
+
+  // Start loops
+  _loopTimer = setInterval(gameTick, 1000);
+  _saveTimer = setInterval(saveGame, 8000);
+  _aucTimer  = setInterval(tickAuctions, 5000);
+  setInterval(updateAucTimers, 1000);
+
+  // Check daily badge
+  updateDailyBadge();
+
+  // Show app
+  document.getElementById('loading').style.display='none';
+  document.getElementById('app').style.display='flex';
+
+  // Load saved theme
+  const th = G.theme || 'dark';
+  document.documentElement.setAttribute('data-theme', th);
+
+  // Initial render
+  nav(_activeTab);
+  updateHUD();
+
+  // Telegram setup
+  const tg = window.Telegram?.WebApp;
+  if(tg){tg.ready();tg.expand();tg.setHeaderColor?.('#060913');tg.setBackgroundColor?.('#060913')}
+}
+
+function gameTick() {
+  const inc = ECO.totalIncome(G);
+  G.coins += inc;
+  G.totalCoinsEarned += inc;
+  G.xp += inc * 0.1;
+  updateHUD();
+  checkLevelUp();
+  checkMilestones();
+  // Happiness decay
+  G.slots.forEach(sl => {
+    if(sl?.animal) sl.animal.happiness = Math.max(20, sl.animal.happiness - 0.002);
+  });
+}
+
+function checkLevelUp() {
+  const needed = G.level * 600 + G.level*G.level*120;
+  if(G.xp >= needed) {
+    G.xp -= needed;
+    G.level++;
+    document.getElementById('tb-sub').textContent = `Lv.${G.level} Zookeeper`;
+    toast(`🎉 Level Up! Now Level ${G.level}!`);
+    milestone({icon:'⭐',title:`Level ${G.level}!`,desc:'New rewards unlocked!'});
+  }
+}
+
+function checkMilestones() {
+  const triggered = ECO.checkMilestones(G);
+  triggered.forEach(m => {
+    G.milestones.push(m.key);
+    G.coins += m.coins;
+    G.tokens += m.tokens;
+    G.totalCoinsEarned += m.coins;
+    G.milestonesCoins = (G.milestonesCoins||0)+m.coins;
+    milestone({icon:m.icon, title:m.title, desc:`+${fmtN(m.coins)} 🪙 +${m.tokens} 💎`});
+  });
+}
+
+function tickAuctions() {
+  const now = Date.now();
+  G.auctions = G.auctions.filter(a => {
+    if(a.endsAt > now) return true;
+    // Settle
+    if(a.highestBidder==='player') {
+      a.animal.ownerId='player';
+      G.animals.push(a.animal);
+      G.salesHistory.push({type:'auction',price:a.currentPrice,rarity:a.animal.rarity,ts:now});
+      toast(`🏆 Won auction! ${a.animal.emoji} ${a.animal.name}`);
+      const tr = {c:2,r:8,e:35,l:110,m:450,a:1500,g:5000}[a.animal.rarity]||2;
+      G.tokens += tr;
+      updateHUD();
+    }
+    if(a.sellerId==='player' && a.highestBidder && a.highestBidder!=='player') {
+      G.coins += Math.round(a.currentPrice*0.95);
+      G.totalCoinsEarned += Math.round(a.currentPrice*0.95);
+      G.salesDone=(G.salesDone||0)+1;
+      updateHUD();
+    }
+    return false;
+  });
+  // Replenish bot auctions
+  while(G.auctions.filter(a=>a.sellerId!=='player').length < 4) _addBotAuction();
+  // Replenish bot market
+  while(G.market.filter(l=>l.sellerId!=='player').length < 12) _addBotListing();
+  // Prune old market listings
+  G.market = G.market.filter(l => Date.now()-l.listedAt < 86400000*3);
+  if(_activeTab==='market') nav('market');
+}
+
+function _addBotAuction() {
+  const r = RARITY_ORDER[Math.floor(Math.random()*5)];
+  const base = randomByRarity(r);
+  const animal = generateInstance(base,'bot_'+uid());
+  const sp = Math.round(ECO.suggestPrice(animal)*0.55);
+  const bots=['ArcticWave','CryptoFox','NeonPulse','StarDust','ZooKing'];
+  G.auctions.push({
+    id:uid(), seller:bots[Math.floor(Math.random()*bots.length)], sellerId:'bot_'+uid(),
+    animal, startPrice:sp, currentPrice:sp,
+    highestBidder:null, endsAt:Date.now()+(0.5+Math.random()*5)*3600000, bids:[],
+  });
+}
+function _addBotListing() {
+  const r = RARITY_ORDER[Math.floor(Math.random()*4)];
+  const base = randomByRarity(r);
+  const animal = generateInstance(base,'bot_'+uid());
+  const price = Math.round(ECO.suggestPrice(animal)*(0.75+Math.random()*.7));
+  const bots=['BlockchainBear','DeFiDragon','MoonFox','SatoshiHawk','Web3Wolf'];
+  G.market.push({
+    id:uid(), seller:bots[Math.floor(Math.random()*bots.length)], sellerId:'bot_'+uid(),
+    animal, price, listedAt:Date.now(), type:'fixed',
+  });
+}
+
+/* ─── BREED JOB TICK ────────────────────────────────── */
+function tickBreedJob() {
+  if(!G.breedJob) return;
+  const remaining = Math.max(0, G.breedJob.finishAt - Date.now());
+  if(remaining<=0 && !G.breedJob.done) {
+    G.breedJob.done=true;
+    toast('🧬 Breeding complete! Collect your offspring!');
+    document.getElementById('badge-breed').classList.add('show');
+    if(_activeTab==='breed') nav('breed');
+  }
+}
+setInterval(tickBreedJob, 2000);
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 5 — HUD & FORMATTING
+═══════════════════════════════════════════════════════ */
+function fmtN(n) {
+  n = Math.floor(n);
+  if(n>=1e12) return (n/1e12).toFixed(2)+'T';
+  if(n>=1e9)  return (n/1e9).toFixed(2)+'B';
+  if(n>=1e6)  return (n/1e6).toFixed(2)+'M';
+  if(n>=1e3)  return (n/1e3).toFixed(1)+'K';
+  return n.toLocaleString();
+}
+function fmtF(n) {
+  if(n>=1000) return fmtN(n);
+  return n.toFixed(2);
+}
+function fmtTime(secs) {
+  if(secs<60) return Math.floor(secs)+'s';
+  if(secs<3600) return Math.floor(secs/60)+'m '+Math.floor(secs%60)+'s';
+  if(secs<86400) return Math.floor(secs/3600)+'h '+Math.floor((secs%3600)/60)+'m';
+  return Math.floor(secs/86400)+'d '+Math.floor((secs%86400)/3600)+'h';
+}
+function fmtMs(ms) { return fmtTime(ms/1000) }
+
+function updateHUD() {
+  if(!G)return;
+  document.getElementById('hud-coins').textContent = fmtN(G.coins);
+  document.getElementById('hud-tokens').textContent = fmtN(G.tokens);
+  const inc = ECO.totalIncome(G);
+  document.getElementById('hud-rate').textContent = '+'+fmtF(inc)+'/s';
+  document.getElementById('tb-sub').textContent = `Lv.${G.level} Zookeeper`;
+  const boost = G.dailyBoostExpiry>Date.now();
+  document.getElementById('badge-boost').classList.toggle('show', boost);
+  if(G.breedJob && !G.breedJob.done)
+    document.getElementById('badge-breed').classList.add('show');
+}
+
+function updateDailyBadge() {
+  const avail = !G.lastDailyClaim||(Date.now()-G.lastDailyClaim)>=86400000;
+  const btn = document.getElementById('nav-daily');
+  const existing = btn.querySelector('.notif');
+  if(avail && !existing){const d=document.createElement('div');d.className='notif';btn.appendChild(d)}
+  else if(!avail && existing) existing.remove();
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 6 — NAVIGATION & TAB RENDERING
+═══════════════════════════════════════════════════════ */
+function nav(tab) {
+  _activeTab = tab;
+  document.querySelectorAll('.nb').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  const scr = document.getElementById('screen');
+  scr.scrollTop=0;
+  if(tab==='zoo')      renderZoo(scr);
+  else if(tab==='cases')   renderCases(scr);
+  else if(tab==='animals') renderAnimals(scr);
+  else if(tab==='market')  renderMarket(scr);
+  else if(tab==='breed')   renderBreed(scr);
+  else if(tab==='daily')   renderDaily(scr);
+  else if(tab==='top')     renderTop(scr);
+  else if(tab==='settings')renderSettings(scr);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 7 — ZOO TAB
+═══════════════════════════════════════════════════════ */
+function renderZoo(scr) {
+  const inc = ECO.totalIncome(G);
+  const filled = G.slots.filter(s=>s?.animal).length;
+  scr.innerHTML = `
+    <div class="panel">
+      <div class="panel-hd">
+        <div class="panel-title"><span class="panel-icon">🏡</span>My Zoo</div>
+        <button class="btn btn-ghost btn-sm" onclick="showExpandZoo()">🔓 Expand</button>
+      </div>
+      <div class="stat-grid stat-grid-3" style="margin-bottom:14px">
+        <div class="stat-item"><div class="stat-v">${filled}/${G.slots.length}</div><div class="stat-l">Active</div></div>
+        <div class="stat-item"><div class="stat-v">${fmtF(inc)}</div><div class="stat-l">🪙/sec</div></div>
+        <div class="stat-item"><div class="stat-v">Lv${G.level}</div><div class="stat-l">Level</div></div>
+      </div>
+      <div class="zoo-grid" id="zoo-grid"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-hd">
+        <div class="panel-title"><span class="panel-icon">📦</span>Inventory <span style="color:var(--text-muted);font-size:12px;font-weight:400">(${G.animals.length} animals)</span></div>
+        <button class="btn btn-primary btn-sm" onclick="nav('cases')">+ Open Cases</button>
+      </div>
+      <div id="inv-list"></div>
+    </div>`;
+  _renderZooGrid();
+  _renderInventory('inv-list', true);
+}
+
+function _renderZooGrid() {
+  const grid = document.getElementById('zoo-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  G.slots.forEach((sl,i) => {
+    const div = document.createElement('div');
+    div.className = 'zoo-slot' + (sl?.animal?' filled r-'+sl.animal.rarity:'');
+    div.setAttribute('data-biome', sl?.biome||'');
+    if(sl?.animal) {
+      const a = sl.animal;
+      const inc = ECO.animalIncome(a,sl,G);
+      div.innerHTML = `
+        <span class="ze">${a.emoji}</span>
+        <span class="zn">${a.name.length>10?a.name.slice(0,9)+'…':a.name}</span>
+        <span class="zlv">Lv${a.level}</span>
+        <span class="zinc">+${fmtF(inc)}/s</span>`;
+      div.onclick = () => openSlotModal(i);
+    } else {
+      const bLabel = sl?.biome ? `📍${sl.biome}` : '+ Place';
+      div.innerHTML = `<span class="empty-cross">+</span><span class="empty-txt">${bLabel}</span>`;
+      div.onclick = () => openPlaceModal(i);
+    }
+    grid.appendChild(div);
+  });
+  // Float coins occasionally
+  if(Math.random()<.15) spawnFloat();
+}
+
+function _renderInventory(containerId, withPlaceBtn) {
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  const inSlot = new Set(G.slots.filter(s=>s?.animal).map(s=>s.animal.uid));
+  const free = G.animals.filter(a=>a.ownerId==='player'&&!inSlot.has(a.uid));
+  if(free.length===0) {
+    el.innerHTML=`<div class="empty"><span class="ei">🦁</span><p>All animals are placed in your Zoo!<br>Open Cases to get more.</p></div>`;
+    return;
+  }
+  el.innerHTML = free.slice(0,30).map(a => {
+    const inc = ECO.animalIncome(a,null,G);
+    const mutHtml = a.mutation!=='None'?`<span class="mb mb-${a.mutation.toLowerCase()}">${a.mutation}</span>`:'';
+    return `<div class="ac r-${a.rarity}">
+      <div class="ac-emoji">${a.emoji}</div>
+      <div class="ac-info">
+        <div class="ac-name">${a.name} ${mutHtml}</div>
+        <div class="ac-meta"><span class="rb rb-${a.rarity}">${RARITY_KEYS[a.rarity]||a.rarity}</span></div>
+        <div class="ac-income">+${fmtF(inc)}/s</div>
+      </div>
+      <div class="ac-right">
+        <span class="tag tag-gold">Lv${a.level}</span>
+        ${withPlaceBtn?`<button class="btn btn-primary btn-xs" onclick="event.stopPropagation();quickPlace('${a.uid}')">Place</button>`:''}
+        <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();openSellModal('${a.uid}')">🏷 Sell</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openSlotModal(idx) {
+  const sl = G.slots[idx];
+  const a = sl?.animal;
+  if(!a) { openPlaceModal(idx); return; }
+  const inc = ECO.animalIncome(a,sl,G);
+  const upgCost = ECO.upgradeCost(a);
+  const deltaInc = ECO.upgradeIncomeDelta(a);
+  const canUpg = G.coins >= upgCost && a.level < 50;
+  const mutHtml = a.mutation!=='None'?`<span class="mb mb-${a.mutation.toLowerCase()}">${a.mutation}</span>`:'';
+  document.getElementById('modal-slot-title').textContent = `${a.emoji} ${a.name}`;
+  document.getElementById('modal-slot-content').innerHTML = `
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-size:64px;margin-bottom:10px;animation:winBounce 2s ease-in-out infinite">${a.emoji}</div>
+      <div style="display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:10px">
+        <span class="rb rb-${a.rarity}">${RARITY_KEYS[a.rarity]}</span>
+        ${mutHtml}
+        <span class="tag tag-gold">Lv${a.level}</span>
+        <span class="tag tag-blue">📍${a.biome}</span>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:22px;color:var(--green);font-weight:700">+${fmtF(inc)}/s</div>
+    </div>
+    <div class="stat-grid" style="margin-bottom:16px">
+      <div class="stat-item"><div class="stat-v">${a.stats.power}</div><div class="stat-l">⚔️ Power</div></div>
+      <div class="stat-item"><div class="stat-v">${a.stats.speed}</div><div class="stat-l">💨 Speed</div></div>
+      <div class="stat-item"><div class="stat-v">${a.stats.luck}</div><div class="stat-l">🍀 Luck</div></div>
+      <div class="stat-item"><div class="stat-v">${a.happiness}%</div><div class="stat-l">😊 Happy</div></div>
+    </div>
+    <div class="prog-wrap prog-green" style="margin-bottom:14px">
+      <div class="prog-fill" style="width:${a.happiness}%"></div>
+    </div>
+    <div style="background:var(--bg-elevated);border-radius:10px;padding:12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:10px;color:var(--text-muted);margin-bottom:3px">Upgrade Cost</div>
+        <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--gold)">${a.level<50?'🪙 '+fmtN(upgCost):'MAX LEVEL'}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:10px;color:var(--text-muted);margin-bottom:3px">Income after</div>
+        <div style="font-family:var(--font-mono);font-size:13px;color:var(--green)">+${fmtF(deltaInc)}/s bonus</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <button class="btn btn-gold btn-full" onclick="upgradeSlot(${idx})" ${canUpg?'':'disabled'}>
+        ⬆️ Upgrade to Lv${Math.min(a.level+1,50)}
+      </button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <button class="btn btn-ghost btn-full" onclick="feedAnimal('${a.uid}')">🍖 Feed (+Happiness)</button>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost" style="flex:1" onclick="removeSlot(${idx});closeModal('modal-slot')">↩ Remove</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="openSellModal('${a.uid}');closeModal('modal-slot')">🏷 Sell</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('modal-slot')">Close</button>
+    </div>`;
+  document.getElementById('modal-slot').classList.add('show');
+}
+
+function openPlaceModal(idx) {
+  const inSlot = new Set(G.slots.filter(s=>s?.animal).map(s=>s.animal.uid));
+  const free = G.animals.filter(a=>a.ownerId==='player'&&!inSlot.has(a.uid));
+  if(free.length===0){toast('📦 No free animals! Open Cases first.');return;}
+  document.getElementById('modal-slot-title').textContent = '🐾 Place Animal';
+  document.getElementById('modal-slot-content').innerHTML = `
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">Select an animal to place in slot ${idx+1}:</p>
+    <div style="max-height:360px;overflow-y:auto">
+      ${free.map(a=>{
+        const inc=ECO.animalIncome(a,G.slots[idx],G);
+        const biomeBonusHtml = a.biome===G.slots[idx]?.biome?'<span class="tag tag-green">🌿 Biome Bonus</span>':'';
+        return `<div class="ac r-${a.rarity}" style="cursor:pointer" onclick="placeAnimal('${a.uid}',${idx})">
+          <div class="ac-emoji">${a.emoji}</div>
+          <div class="ac-info">
+            <div class="ac-name">${a.name}</div>
+            <div class="ac-meta"><span class="rb rb-${a.rarity}">${RARITY_KEYS[a.rarity]}</span>${biomeBonusHtml}</div>
+            <div class="ac-income">+${fmtF(inc)}/s</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <button class="btn btn-ghost btn-full" style="margin-top:10px" onclick="closeModal('modal-slot')">Cancel</button>`;
+  document.getElementById('modal-slot').classList.add('show');
+}
+
+function placeAnimal(uid, slotIdx) {
+  const a = G.animals.find(x=>x.uid===uid);
+  if(!a) return;
+  G.slots[slotIdx].animal = a;
+  closeModal('modal-slot');
+  saveGame();
+  if(_activeTab==='zoo') nav('zoo');
+  toast(`${a.emoji} ${a.name} placed in Zoo!`);
+}
+
+function quickPlace(uid) {
+  const a = G.animals.find(x=>x.uid===uid);
+  if(!a) return;
+  const emptyIdx = G.slots.findIndex(s=>!s.animal);
+  if(emptyIdx===-1){toast('Zoo full! Remove an animal first.');return;}
+  G.slots[emptyIdx].animal = a;
+  saveGame();
+  if(_activeTab==='zoo') nav('zoo');
+  toast(`${a.emoji} placed in Zoo!`);
+}
+
+function upgradeSlot(idx) {
+  const a = G.slots[idx]?.animal;
+  if(!a) return;
+  if(a.level>=50){toast('✅ Max level reached!');return;}
+  const cost = ECO.upgradeCost(a);
+  if(G.coins<cost){toast(`❌ Need ${fmtN(cost)} 🪙`);return;}
+  G.coins -= cost;
+  a.level++;
+  if(a.level%10===0){
+    const tb = a.level*3;
+    G.tokens+=tb;
+    toast(`⬆️ ${a.name} → Lv${a.level}! +${tb} 💎`);
+  } else toast(`⬆️ ${a.name} upgraded to Level ${a.level}!`);
+  closeModal('modal-slot');
+  updateHUD();
+  saveGame();
+  nav('zoo');
+}
+
+function removeSlot(idx) {
+  G.slots[idx].animal = null;
+  saveGame();
+  if(_activeTab==='zoo') nav('zoo');
+}
+
+function feedAnimal(uid) {
+  const a = G.animals.find(x=>x.uid===uid)||G.slots.map(s=>s?.animal).find(a=>a?.uid===uid);
+  if(!a) return;
+  const cost = 50;
+  if(G.coins<cost){toast('❌ Need 50 🪙 to feed');return;}
+  G.coins -= cost;
+  a.happiness = Math.min(100, a.happiness+15);
+  updateHUD();
+  saveGame();
+  toast(`🍖 ${a.name} is happier! +15 happiness`);
+  closeModal('modal-slot');
+}
+
+function showExpandZoo() {
+  const cost = G.level * 8000;
+  if(G.coins<cost){toast(`❌ Need ${fmtN(cost)} 🪙 to expand`);return;}
+  G.coins -= cost;
+  const biomeOrder = ['jungle','ocean','arctic','desert','fantasy','cyber'];
+  const newBiome = biomeOrder[G.slots.length % biomeOrder.length];
+  G.slots.push({biome:newBiome, animal:null});
+  updateHUD();
+  saveGame();
+  nav('zoo');
+  toast(`🏗️ Zoo expanded! New ${newBiome} slot added.`);
+}
+
+function spawnFloat() {
+  const grid = document.getElementById('zoo-grid');
+  if(!grid) return;
+  const filled = [...grid.children].filter((c,i)=>G.slots[i]?.animal);
+  if(!filled.length) return;
+  const el = filled[Math.floor(Math.random()*filled.length)];
+  const r = el.getBoundingClientRect();
+  const f = document.createElement('div');
+  f.className='inc-float';
+  f.textContent='+🪙';
+  f.style.left=(r.left+r.width/2-10)+'px';
+  f.style.top=(r.top+10)+'px';
+  document.body.appendChild(f);
+  setTimeout(()=>f.remove(),1400);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 8 — CASES TAB
+═══════════════════════════════════════════════════════ */
+const CASE_DEFS = [
+  {id:'standard',emoji:'📦',name:'Standard Case',desc:'Common & Rare animals',
+   color:'linear-gradient(135deg,rgba(59,130,246,.2),rgba(59,130,246,.05))',
+   dropTable:[{r:'c',chance:.65},{r:'r',chance:.26},{r:'e',chance:.08},{r:'l',chance:.01}]},
+  {id:'rare',emoji:'💜',name:'Rare Vault',desc:'Rare & Epic animals',
+   color:'linear-gradient(135deg,rgba(139,92,246,.22),rgba(139,92,246,.05))',
+   dropTable:[{r:'c',chance:.2},{r:'r',chance:.45},{r:'e',chance:.28},{r:'l',chance:.06},{r:'m',chance:.01}]},
+  {id:'epic',emoji:'🌟',name:'Epic Chest',desc:'Epic & Legendary animals',
+   color:'linear-gradient(135deg,rgba(245,158,11,.2),rgba(245,158,11,.05))',
+   dropTable:[{r:'r',chance:.15},{r:'e',chance:.48},{r:'l',chance:.3},{r:'m',chance:.06},{r:'a',chance:.01}]},
+  {id:'legendary',emoji:'🔥',name:'Legendary Crate',desc:'Legendary, Mythic & Ancient',
+   color:'linear-gradient(135deg,rgba(236,72,153,.2),rgba(236,72,153,.05))',
+   dropTable:[{r:'e',chance:.1},{r:'l',chance:.4},{r:'m',chance:.35},{r:'a',chance:.14},{r:'g',chance:.01}]},
+];
+
+function renderCases(scr) {
+  scr.innerHTML = `
+    <div class="panel">
+      <div class="panel-title"><span class="panel-icon">🎁</span>Case Opening</div>
+      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;line-height:1.5">
+        Open cases to collect rare animals. Each animal earns passive income. Higher cases = rarer drops!
+      </p>
+      <div class="case-grid">
+        ${CASE_DEFS.map(c=>{
+          const price = ECO.casePrice(c.id, G.level);
+          return `<div class="case-card" style="background:${c.color}" onclick="openCase('${c.id}')">
+            <div class="cc-shine"></div>
+            <span class="cc-emoji">${c.emoji}</span>
+            <h3>${c.name}</h3>
+            <p class="cc-desc">${c.desc}</p>
+            <div class="cc-price">🪙 ${fmtN(price)}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><span class="panel-icon">📊</span>Drop Rates</div>
+      <div class="stabs" id="case-drop-tabs">
+        ${CASE_DEFS.map((c,i)=>`<div class="stab ${i===0?'on':''}" onclick="showDropTable('${c.id}',this)">${c.name}</div>`).join('')}
+      </div>
+      <div id="drop-table-content"></div>
+    </div>`;
+  showDropTable('standard', document.querySelector('.stab.on'));
+}
+
+function showDropTable(caseId, el) {
+  document.querySelectorAll('#case-drop-tabs .stab').forEach(s=>s.classList.remove('on'));
+  el?.classList.add('on');
+  const c = CASE_DEFS.find(x=>x.id===caseId);
+  if(!c) return;
+  const dt = document.getElementById('drop-table-content');
+  const rarityNames = {c:'Common',r:'Rare',e:'Epic',l:'Legendary',m:'Mythic',a:'Ancient',g:'Genesis'};
+  dt.innerHTML = c.dropTable.map(row=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <span class="rb rb-${row.r}" style="min-width:72px;text-align:center">${rarityNames[row.r]}</span>
+      <div class="prog-wrap" style="flex:1">
+        <div class="prog-fill" style="width:${Math.min(row.chance??row[1],1)*100}%"></div>
+      </div>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);width:40px;text-align:right">
+        ${((row.chance??row[1])*100).toFixed(1)}%
+      </span>
+    </div>`).join('');
+}
+
+let _pendingWinAnimal = null;
+let _pendingWinCb = null;
+
+function openCase(caseId) {
+  const price = ECO.casePrice(caseId, G.level);
+  if(G.coins<price){toast('❌ Not enough coins!');return;}
+  const caseDef = CASE_DEFS.find(c=>c.id===caseId);
+  if(!caseDef) return;
+  G.coins -= price;
+  G.caseOpened++;
+  updateHUD();
+
+  // Determine rarity
+  const rarity = rollRarity(caseDef.dropTable);
+  const base = randomByRarity(rarity);
+  const won = generateInstance(base,'player');
+
+  // Build roulette reel (32 items, winner at pos 24)
+  const reel=[];
+  for(let i=0;i<32;i++){
+    if(i===24){reel.push(won);continue;}
+    const rr = rollRarity(caseDef.dropTable);
+    const rb = randomByRarity(rr);
+    reel.push({...rb, uid:uid()+'_reel', level:1, mutation:'None', rarity:rr,
+      stats:{power:rb.basePower,speed:rb.baseSpeed,luck:rb.baseLuck},
+      baseIncome:rb.baseIncome, ownerId:'reel', happiness:80, createdAt:0});
+  }
+
+  // Show roulette
+  const overlay = document.getElementById('roulette-overlay');
+  const track = document.getElementById('rl-track');
+  const winCard = document.getElementById('rl-win-card');
+  winCard.classList.remove('show');
+  overlay.classList.add('show');
+
+  track.innerHTML = reel.map(a=>`
+    <div class="rl-item r-${a.rarity}" style="border-color:var(--r${a.rarity==='c'?'c':a.rarity==='r'?'r':a.rarity==='e'?'e':a.rarity==='l'?'l':a.rarity==='m'?'m':a.rarity==='a'?'an':'g'})">
+      <span class="ri-em">${a.emoji}</span>
+      <span class="ri-nm">${a.name.slice(0,10)}</span>
+    </div>`).join('');
+
+  // Animate
+  const itemW = 82; // 76 + 6 gap
+  const wrapW = document.getElementById('rl-track-outer')?.offsetWidth || 340;
+  const target = 24*itemW - (wrapW/2 - 38);
+  track.style.transition='none';
+  track.style.transform='translateX(0)';
+  setTimeout(()=>{
+    track.style.transition='transform 4s cubic-bezier(.15,.6,.1,1)';
+    track.style.transform=`translateX(-${target}px)`;
+  },100);
+
+  _pendingWinAnimal = won;
+  _pendingWinCb = () => {
+    G.animals.push(won);
+    const tr = {c:1,r:6,e:25,l:85,m:350,a:1200,g:4000}[won.rarity]||1;
+    G.tokens += tr;
+    updateHUD();
+    saveGame();
+    checkMilestones();
+    if(_activeTab==='animals') nav('animals');
+    if(_activeTab==='zoo') nav('zoo');
+    toast(`🎉 ${won.emoji} ${won.name} added! +${tr} 💎`);
+  };
+
+  setTimeout(()=>{
+    // Show win card
+    document.getElementById('wc-emoji').textContent = won.emoji;
+    document.getElementById('wc-name').textContent = won.name;
+    const mutHtml = won.mutation!=='None'?`<span class="mb mb-${won.mutation.toLowerCase()}">${won.mutation}</span>`:'';
+    document.getElementById('wc-meta').textContent = `${RARITY_KEYS[won.rarity]} · ${won.biome}`;
+    document.getElementById('wc-badges').innerHTML = `<span class="rb rb-${won.rarity}">${RARITY_KEYS[won.rarity]}</span>${mutHtml}`;
+    const inc = ECO.animalIncome(won,null,G);
+    document.getElementById('wc-income').textContent = `+${fmtF(inc)}/s income`;
+    winCard.classList.add('show');
+    if(['l','m','a','g'].includes(won.rarity)) spawnFireworks();
+  },4300);
+}
+
+function rollRarity(dropTable) {
+  const roll = Math.random();
+  let cum = 0;
+  for(const row of dropTable){
+    cum += row.chance ?? row[1];
+    if(roll<cum) return row.r ?? row[0];
+  }
+  return dropTable[0].r??dropTable[0][0];
+}
+
+function spawnFireworks() {
+  const fw = document.getElementById('rl-fireworks');
+  fw.innerHTML='';
+  const colors = ['var(--gold)','var(--accent)','var(--purple)','var(--pink)','var(--green)'];
+  for(let i=0;i<40;i++){
+    const sp = document.createElement('div');
+    sp.className='fw-spark';
+    sp.style.cssText=`
+      left:${20+Math.random()*60}%;top:${10+Math.random()*80}%;
+      width:${4+Math.random()*8}px;height:${4+Math.random()*8}px;
+      background:${colors[i%colors.length]};
+      animation-delay:${Math.random()*.8}s;
+      animation-duration:${.8+Math.random()*.6}s;
+      --fx:${-80+Math.random()*160}px;
+      --fy:${-100+Math.random()*60}px;
+    `;
+    fw.appendChild(sp);
+  }
+  setTimeout(()=>fw.innerHTML='',2000);
+}
+
+function closeRoulette() {
+  document.getElementById('roulette-overlay').classList.remove('show');
+  if(_pendingWinCb){_pendingWinCb();_pendingWinCb=null;}
+  _pendingWinAnimal=null;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 9 — ANIMALS TAB
+═══════════════════════════════════════════════════════ */
+let _animalFilter='all', _animalSort='rarity';
+
+function renderAnimals(scr) {
+  scr.innerHTML = `
+    <div class="panel">
+      <div class="panel-hd">
+        <div class="panel-title"><span class="panel-icon">🦁</span>Collection <span style="color:var(--text-muted);font-size:12px;font-weight:400">${G.animals.length} animals</span></div>
+      </div>
+      <div class="chips" id="anim-rarity-filter">
+        ${['all','c','r','e','l','m','a','g'].map(r=>`
+          <div class="chip ${r===_animalFilter?'on':''}" onclick="setAnimalFilter('${r}',this)">
+            ${r==='all'?'All':RARITY_KEYS[r]||r}
+          </div>`).join('')}
+      </div>
+      <div class="stabs" id="anim-sort-tabs">
+        <div class="stab ${_animalSort==='rarity'?'on':''}" onclick="setAnimalSort('rarity',this)">By Rarity</div>
+        <div class="stab ${_animalSort==='income'?'on':''}" onclick="setAnimalSort('income',this)">By Income</div>
+        <div class="stab ${_animalSort==='level'?'on':''}" onclick="setAnimalSort('level',this)">By Level</div>
+        <div class="stab ${_animalSort==='new'?'on':''}" onclick="setAnimalSort('new',this)">Newest</div>
+      </div>
+      <div id="animals-full-list"></div>
+    </div>`;
+  _renderAnimalsList();
+}
+
+function setAnimalFilter(r, el) {
+  _animalFilter=r;
+  document.querySelectorAll('#anim-rarity-filter .chip').forEach(c=>c.classList.remove('on'));
+  el?.classList.add('on');
+  _renderAnimalsList();
+}
+function setAnimalSort(s, el) {
+  _animalSort=s;
+  document.querySelectorAll('#anim-sort-tabs .stab').forEach(t=>t.classList.remove('on'));
+  el?.classList.add('on');
+  _renderAnimalsList();
+}
+
+function _renderAnimalsList() {
+  const el = document.getElementById('animals-full-list');
+  if(!el) return;
+  let list = G.animals.filter(a=>a.ownerId==='player');
+  if(_animalFilter!=='all') list = list.filter(a=>a.rarity===_animalFilter);
+  if(_animalSort==='rarity') list.sort((a,b)=>RARITY_ORDER.indexOf(b.rarity)-RARITY_ORDER.indexOf(a.rarity));
+  else if(_animalSort==='income') list.sort((a,b)=>ECO.animalIncome(b,null,G)-ECO.animalIncome(a,null,G));
+  else if(_animalSort==='level') list.sort((a,b)=>b.level-a.level);
+  else list.sort((a,b)=>b.createdAt-a.createdAt);
+
+  if(!list.length){el.innerHTML=`<div class="empty"><span class="ei">📭</span><p>No ${_animalFilter==='all'?'':''+RARITY_KEYS[_animalFilter]+' '}animals yet.<br>Open cases to get some!</p></div>`;return;}
+  const inSlot = new Set(G.slots.filter(s=>s?.animal).map(s=>s.animal.uid));
+  el.innerHTML = list.slice(0,60).map(a=>{
+    const inc=ECO.animalIncome(a,null,G);
+    const placed=inSlot.has(a.uid);
+    const mutHtml=a.mutation!=='None'?`<span class="mb mb-${a.mutation.toLowerCase()}">${a.mutation}</span>`:'';
+    return `<div class="ac r-${a.rarity}">
+      <div class="ac-emoji">${a.emoji}</div>
+      <div class="ac-info">
+        <div class="ac-name">${a.name} ${mutHtml}</div>
+        <div class="ac-meta"><span class="rb rb-${a.rarity}">${RARITY_KEYS[a.rarity]}</span><span class="tag tag-blue" style="font-size:9px">📍${a.biome}</span></div>
+        <div class="ac-income">+${fmtF(inc)}/s</div>
+      </div>
+      <div class="ac-right">
+        <span class="tag tag-gold">Lv${a.level}</span>
+        ${placed?'<span class="tag tag-green">In Zoo</span>':`<button class="btn btn-primary btn-xs" onclick="event.stopPropagation();quickPlace('${a.uid}')">Place</button>`}
+        <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();openSellModal('${a.uid}')">🏷</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 10 — MARKETPLACE
+═══════════════════════════════════════════════════════ */
+let _mTab='buy';
+
+function renderMarket(scr) {
+  scr.innerHTML = `
+    <div class="panel">
+      <div class="panel-hd">
+        <div class="panel-title"><span class="panel-icon">🏪</span>Marketplace</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-gold btn-sm" onclick="openSellModal()">📢 Sell</button>
+          <button class="btn btn-ghost btn-icon" onclick="refreshMarket()">🔄</button>
+        </div>
+      </div>
+      <div class="stabs" id="market-tabs">
+        <div class="stab on" onclick="setMTab('buy',this)">Buy</div>
+        <div class="stab" onclick="setMTab('auction',this)">⏰ Auctions</div>
+        <div class="stab" onclick="setMTab('mine',this)">My Listings</div>
+        <div class="stab" onclick="setMTab('history',this)">📈 History</div>
+      </div>
+      <div id="market-content"></div>
+    </div>`;
+  _renderMTab('buy');
+}
+
+function setMTab(t, el) {
+  _mTab=t;
+  document.querySelectorAll('#market-tabs .stab').forEach(s=>s.classList.remove('on'));
+  el?.classList.add('on');
+  _renderMTab(t);
+}
+
+function _renderMTab(t) {
+  const el = document.getElementById('market-content');
+  if(!el) return;
+  if(t==='buy') _renderBuyTab(el);
+  else if(t==='auction') _renderAuctionTab(el);
+  else if(t==='mine') _renderMineTab(el);
+  else if(t==='history') _renderHistoryTab(el);
+}
+
+function _renderBuyTab(el) {
+  let listings = G.market.filter(l=>l.sellerId!=='player');
+  if(_marketRarity!=='all') listings=listings.filter(l=>l.animal.rarity===_marketRarity);
+  if(_marketSort==='cheap') listings.sort((a,b)=>a.price-b.price);
+  else if(_marketSort==='expensive') listings.sort((a,b)=>b.price-a.price);
+  else if(_marketSort==='income') listings.sort((a,b)=>ECO.animalIncome(b.animal,null,G)-ECO.animalIncome(a.animal,null,G));
+  else listings.sort((a,b)=>b.listedAt-a.listedAt);
+
+  el.innerHTML = `
+    <div class="chips">
+      ${['all','c','r','e','l','m'].map(r=>`
+        <div class="chip ${r===_marketRarity?'on':''}" onclick="setMRarity('${r}',this)">
+          ${r==='all'?'All':RARITY_KEYS[r]}</div>`).join('')}
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+      ${[['new','Newest'],['cheap','Cheapest'],['expensive','Priciest'],['income','Top Income']].map(([v,l])=>
+        `<div class="chip ${_marketSort===v?'on':''}" onclick="setMSort('${v}',this)">${l}</div>`).join('')}
+    </div>
+    ${!listings.length?`<div class="empty"><span class="ei">🏪</span><p>No listings match your filter.</p></div>`
+    :listings.slice(0,25).map(l=>{
+      const a=l.animal;
+      const inc=ECO.animalIncome(a,null,G);
+      const canBuy=G.coins>=l.price;
+      const mutHtml=a.mutation!=='None'?`<span class="mb mb-${a.mutation.toLowerCase()}">${a.mutation}</span>`:'';
+      return `<div class="mc r-${a.rarity}">
+        <div class="mc-em">${a.emoji}</div>
+        <div class="mc-info">
+          <div class="mc-name">${a.name} ${mutHtml}</div>
+          <div class="mc-meta"><span class="rb rb-${a.rarity}">${RARITY_KEYS[a.rarity]}</span> Lv${a.level} · +${fmtF(inc)}/s</div>
+          <div class="mc-stats">⚔️${a.stats.power} 💨${a.stats.speed} 🍀${a.stats.luck}</div>
+        </div>
+        <div class="mc-right">
+          <div class="mc-price">🪙${fmtN(l.price)}</div>
+          <div class="mc-seller">@${l.seller}</div>
+          <button class="btn ${canBuy?'btn-gold':'btn-ghost'} btn-xs" onclick="buyListing('${l.id}')" ${canBuy?'':'disabled'}>
+            ${canBuy?'Buy':'Low coins'}
+          </button>
+        </div>
+      </div>`;
+    }).join('')}`;
+}
+
+function _renderAuctionTab(el) {
+  const now = Date.now();
+  const active = G.auctions.filter(a=>a.endsAt>now);
+  if(!active.length){el.innerHTML=`<div class="empty"><span class="ei">⏰</span><p>No active auctions right now.</p></div>`;return;}
+  el.innerHTML = active.map(a=>{
+    const inc=ECO.animalIncome(a.animal,null,G);
+    const tl=a.endsAt-now;
+    const minBid=Math.ceil(a.currentPrice*1.06);
+    const isWin=a.highestBidder==='player';
+    const mutHtml=a.animal.mutation!=='None'?`<span class="mb mb-${a.animal.mutation.toLowerCase()}">${a.animal.mutation}</span>`:'';
+    return `<div class="auc-card r-${a.animal.rarity}">
+      <div class="auc-header">
+        <div class="auc-emoji">${a.animal.emoji}</div>
+        <div class="auc-info">
+          <div class="auc-name">${a.animal.name} ${mutHtml}</div>
+          <div class="auc-meta"><span class="rb rb-${a.animal.rarity}">${RARITY_KEYS[a.animal.rarity]}</span> Lv${a.animal.level} · +${fmtF(inc)}/s</div>
+        </div>
+        <div class="auc-timer" id="atimer-${a.id}">${fmtMs(tl)}</div>
+      </div>
+      <div class="auc-price-row">
+        <div>
+          <div class="auc-plabel">Current Bid</div>
+          <div class="auc-curprice">🪙 ${fmtN(a.currentPrice)}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="auc-plabel">Top Bidder</div>
+          <div style="font-size:13px;font-weight:700;color:${isWin?'var(--green)':'var(--text-primary)'}">
+            ${isWin?'YOU 🏆':a.highestBidder||'—'}
+          </div>
+        </div>
+      </div>
+      <div class="auc-bidwrap">
+        <input class="auc-bid-inp" type="number" id="bid-inp-${a.id}" placeholder="Min: ${fmtN(minBid)}" min="${minBid}"/>
+        <button class="btn btn-purple btn-sm" onclick="placeBid('${a.id}')">
+          ${isWin?'Raise Bid':'Place Bid'}
+        </button>
+      </div>
+      ${isWin?`<div class="auc-winning">✅ You're the highest bidder!</div>`:''}
+      <div style="font-size:10px;color:var(--text-muted);margin-top:8px">
+        ${a.bids.length} bids · Seller: @${a.seller}
+        · Ends in: <span style="color:var(--orange)">${fmtMs(tl)}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function _renderMineTab(el) {
+  const mine = G.market.filter(l=>l.sellerId==='player');
+  const myAucs = G.auctions.filter(a=>a.sellerId==='player'&&a.endsAt>Date.now());
+  if(!mine.length&&!myAucs.length){
+    el.innerHTML=`<div class="empty"><span class="ei">📋</span><p>No active listings.<br>List an animal to earn coins!</p></div>`;return;
+  }
+  el.innerHTML=[
+    ...mine.map(l=>`<div class="mc r-${l.animal.rarity}">
+      <div class="mc-em">${l.animal.emoji}</div>
+      <div class="mc-info">
+        <div class="mc-name">${l.animal.name}</div>
+        <div class="mc-meta"><span class="rb rb-${l.animal.rarity}">${RARITY_KEYS[l.animal.rarity]}</span> Fixed Price</div>
+      </div>
+      <div class="mc-right">
+        <div class="mc-price">🪙${fmtN(l.price)}</div>
+        <button class="btn btn-danger btn-xs" onclick="cancelListing('${l.id}')">Cancel</button>
+      </div>
+    </div>`),
+    ...myAucs.map(a=>`<div class="mc r-${a.animal.rarity}">
+      <div class="mc-em">${a.animal.emoji}</div>
+      <div class="mc-info">
+        <div class="mc-name">${a.animal.name}</div>
+        <div class="mc-meta"><span class="rb rb-${a.animal.rarity}">${RARITY_KEYS[a.animal.rarity]}</span> Auction · ${a.bids.length} bids</div>
+      </div>
+      <div class="mc-right">
+        <div class="mc-price">🪙${fmtN(a.currentPrice)}</div>
+        <span class="tag tag-purple">${fmtMs(a.endsAt-Date.now())} left</span>
+      </div>
+    </div>`)
+  ].join('');
+}
+
+function _renderHistoryTab(el) {
+  const h = [...G.salesHistory].reverse().slice(0,20);
+  if(!h.length){el.innerHTML=`<div class="empty"><span class="ei">📈</span><p>No trade history yet.</p></div>`;return;}
+  el.innerHTML=h.map(t=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle)">
+      <div>
+        <span class="rb rb-${t.rarity}" style="margin-right:6px">${RARITY_KEYS[t.rarity]||t.rarity}</span>
+        <span style="font-size:12px;color:var(--text-secondary)">${t.type==='buy'?'Bought':'Sold'}</span>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:13px;color:var(--gold)">🪙${fmtN(t.price)}</div>
+    </div>`).join('');
+}
+
+function setMRarity(r,el){_marketRarity=r;document.querySelectorAll('#market-content .chips .chip').forEach(c=>c.classList.remove('on'));el?.classList.add('on');_renderBuyTab(document.getElementById('market-content'))}
+function setMSort(s,el){_marketSort=s;_renderBuyTab(document.getElementById('market-content'))}
+function refreshMarket(){_addBotListing();_addBotListing();_addBotAuction();toast('🔄 Market refreshed!');nav('market')}
+
+function buyListing(id) {
+  const idx=G.market.findIndex(l=>l.id===id);
+  if(idx===-1){toast('❌ Listing expired');return;}
+  const l=G.market[idx];
+  if(G.coins<l.price){toast('❌ Not enough coins!');return;}
+  G.coins-=l.price;
+  l.animal.ownerId='player';
+  G.animals.push(l.animal);
+  G.market.splice(idx,1);
+  G.salesHistory.push({type:'buy',price:l.price,rarity:l.animal.rarity,ts:Date.now()});
+  const tr={c:1,r:5,e:20,l:70,m:280,a:900,g:3000}[l.animal.rarity]||1;
+  G.tokens+=tr;
+  toast(`🛍 Bought ${l.animal.emoji} ${l.animal.name}! +${tr} 💎`);
+  updateHUD();
+  saveGame();
+  checkMilestones();
+  nav('market');
+}
+
+function placeBid(aId) {
+  const a=G.auctions.find(x=>x.id===aId);
+  if(!a){toast('Auction not found');return;}
+  if(Date.now()>a.endsAt){toast('⏰ Auction ended!');return;}
+  const inp=document.getElementById('bid-inp-'+aId);
+  const amount=parseFloat(inp?.value)||Math.ceil(a.currentPrice*1.06);
+  const minBid=Math.ceil(a.currentPrice*1.06);
+  if(amount<minBid){toast(`❌ Min bid: ${fmtN(minBid)}`);return;}
+  if(G.coins<amount){toast('❌ Not enough coins!');return;}
+  // Refund previous bid
+  if(a.highestBidder==='player') G.coins+=a.currentPrice;
+  G.coins-=amount;
+  a.currentPrice=amount;
+  a.highestBidder='player';
+  a.bids.push({bidder:'player',amount,ts:Date.now()});
+  if(a.endsAt-Date.now()<60000) a.endsAt+=120000; // anti-snipe
+  toast(`✅ Bid placed: 🪙${fmtN(amount)}`);
+  updateHUD();
+  saveGame();
+  nav('market');
+}
+
+function openSellModal(animalUid) {
+  const inSlot=new Set(G.slots.filter(s=>s?.animal).map(s=>s.animal.uid));
+  const free=G.animals.filter(a=>a.ownerId==='player'&&!inSlot.has(a.uid));
+  if(!free.length){toast('No free animals to sell!');return;}
+  const sel=document.getElementById('sell-select');
+  sel.innerHTML=free.map(a=>`<option value="${a.uid}">${a.emoji} ${a.name} [${RARITY_KEYS[a.rarity]}] Lv${a.level}</option>`).join('');
+  if(animalUid) sel.value=animalUid;
+  const updatePreview=()=>{
+    const chosen=free.find(a=>a.uid===sel.value);
+    if(!chosen) return;
+    const suggested=ECO.suggestPrice(chosen);
+    document.getElementById('sell-price').value=suggested;
+    document.getElementById('sell-preview').innerHTML=`
+      <div style="background:var(--bg-elevated);border-radius:10px;padding:10px 12px;font-size:11px;color:var(--text-secondary)">
+        💡 Suggested price: <strong style="color:var(--gold)">${fmtN(suggested)} 🪙</strong> based on income +${fmtF(ECO.animalIncome(chosen,null,G))}/s
+      </div>`;
+  };
+  sel.onchange=updatePreview;
+  updatePreview();
+  document.getElementById('modal-sell').classList.add('show');
+}
+
+function confirmListing() {
+  const uid=document.getElementById('sell-select').value;
+  const price=parseFloat(document.getElementById('sell-price').value);
+  const typeVal=document.getElementById('sell-type').value;
+  if(!uid||!price||price<=0){toast('❌ Invalid listing');return;}
+  const aIdx=G.animals.findIndex(a=>a.uid===uid);
+  if(aIdx===-1) return;
+  const animal=G.animals.splice(aIdx,1)[0];
+  animal.ownerId='market';
+  const isAuction=typeVal.startsWith('auction');
+  const durMap={auction1:3600000,auction6:21600000,auction24:86400000};
+  if(!isAuction){
+    G.market.push({id:uid_(),seller:G.name||'You',sellerId:'player',animal,price:Math.round(price),listedAt:Date.now(),type:'fixed'});
+    toast(`🏷 Listed ${animal.emoji} for 🪙${fmtN(price)}!`);
+  } else {
+    const dur=durMap[typeVal]||86400000;
+    G.auctions.push({
+      id:uid_(),seller:G.name||'You',sellerId:'player',
+      animal,startPrice:Math.round(price),currentPrice:Math.round(price),
+      highestBidder:null,endsAt:Date.now()+dur,bids:[],
+    });
+    toast(`⏰ Auction started! ${animal.emoji} for 24h`);
+  }
+  G.salesDone=(G.salesDone||0)+1;
+  closeModal('modal-sell');
+  saveGame();
+  checkMilestones();
+  nav('market');
+}
+function uid_(){return uid()}
+
+function cancelListing(id){
+  const idx=G.market.findIndex(l=>l.id===id);
+  if(idx===-1) return;
+  const l=G.market[idx];
+  l.animal.ownerId='player';
+  G.animals.push(l.animal);
+  G.market.splice(idx,1);
+  toast('✅ Listing cancelled');
+  saveGame();
+  nav('market');
+}
+
+function updateAucTimers(){
+  G.auctions.forEach(a=>{
+    const el=document.getElementById('atimer-'+a.id);
+    if(!el) return;
+    const tl=Math.max(0,a.endsAt-Date.now());
+    el.textContent=fmtMs(tl);
+    if(tl<300000) el.style.color='var(--red)';
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 11 — BREEDING
+═══════════════════════════════════════════════════════ */
+function renderBreed(scr) {
+  const a1 = G.breedSlot1 ? G.animals.find(a=>a.uid===G.breedSlot1) : null;
+  const a2 = G.breedSlot2 ? G.animals.find(a=>a.uid===G.breedSlot2) : null;
+  const canBreed = a1&&a2&&!G.breedJob;
+  const breedCost = a1&&a2 ? ECO.breedCost(a1,a2) : 0;
+  const breedTime = a1&&a2 ? ECO.breedTime(a1,a2) : 0;
+
+  const jobHtml = G.breedJob ? (() => {
+    const rem = Math.max(0, G.breedJob.finishAt - Date.now());
+    const pct = Math.min(100, (1-(rem/(G.breedJob.totalTime||1)))*100);
+    return `<div class="breed-result" style="border-color:var(--green)">
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">🧬 Breeding in progress…</div>
+      <div class="breed-timer"><span>${fmtMs(rem)}</span><span class="bt-label">remaining</span></div>
+      <div class="prog-wrap prog-green" style="margin-bottom:10px"><div class="prog-fill" style="width:${pct}%"></div></div>
+      ${G.breedJob.done?`<button class="btn btn-green btn-full" onclick="collectBreed()">🍼 Collect Offspring!</button>`:''}
+    </div>` })() : '';
+
+  scr.innerHTML = `
+    <div class="panel">
+      <div class="panel-title"><span class="panel-icon">🧬</span>Breeding Lab</div>
+      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;line-height:1.5">
+        Combine two animals to produce offspring. Higher rarity pairs may produce upgrades! Genetics are inherited.
+      </p>
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px">
+        <div class="breed-slot ${a1?'filled':''}" onclick="openBreedSelect(1)">
+          ${a1?`<div class="bs-emoji">${a1.emoji}</div>
+            <div class="bs-name">${a1.name}</div>
+            <div class="bs-rarity"><span class="rb rb-${a1.rarity}">${RARITY_KEYS[a1.rarity]}</span></div>
+            <button class="btn btn-ghost btn-xs" style="margin-top:6px;width:100%" onclick="event.stopPropagation();clearBreedSlot(1)">✕ Remove</button>`
+          :`<div class="bs-empty">🐾</div><div class="bs-empty-txt">Tap to select</div>`}
+        </div>
+        <div class="breed-arrow">💕</div>
+        <div class="breed-slot ${a2?'filled':''}" onclick="openBreedSelect(2)">
+          ${a2?`<div class="bs-emoji">${a2.emoji}</div>
+            <div class="bs-name">${a2.name}</div>
+            <div class="bs-rarity"><span class="rb rb-${a2.rarity}">${RARITY_KEYS[a2.rarity]}</span></div>
+            <button class="btn btn-ghost btn-xs" style="margin-top:6px;width:100%" onclick="event.stopPropagation();clearBreedSlot(2)">✕ Remove</button>`
+          :`<div class="bs-empty">🐾</div><div class="bs-empty-txt">Tap to select</div>`}
+        </div>
+      </div>
+      ${canBreed&&!G.breedJob?`
+        <div class="breed-result" style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <div><div style="font-size:10px;color:var(--text-muted)">Breeding Cost</div><div style="font-family:var(--font-mono);color:var(--gold);font-size:14px;font-weight:700">🪙 ${fmtN(breedCost)}</div></div>
+            <div style="text-align:right"><div style="font-size:10px;color:var(--text-muted)">Time</div><div style="font-family:var(--font-mono);color:var(--accent);font-size:14px;font-weight:700">${fmtTime(breedTime)}</div></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">
+            Possible offspring rarity: <span class="rb rb-${a1.rarity}">${RARITY_KEYS[a1.rarity]}</span>–<span class="rb rb-${a2.rarity}">${RARITY_KEYS[a2.rarity]}</span>
+            (4% chance of rarity upgrade!)
+          </div>
+          <button class="btn btn-green btn-full" onclick="startBreeding()">🧬 Start Breeding (🪙${fmtN(breedCost)})</button>
+        </div>` : ''}
+      ${jobHtml}
+    </div>
+    <div class="panel">
+      <div class="panel-title"><span class="panel-icon">📖</span>Genetics Guide</div>
+      <div style="font-size:12px;color:var(--text-secondary);line-height:1.7">
+        • Offspring inherit combined stats from both parents<br>
+        • Same-rarity parents give +6% chance for rarity upgrade<br>
+        • Higher rarity breeds cost more but produce better offspring<br>
+        • Mutations are inherited with variance<br>
+        • Breed time scales with rarity (30s to 24h)
+      </div>
+    </div>`;
+}
+
+function openBreedSelect(slot) {
+  if(G.breedJob) {toast('Breeding in progress!');return;}
+  _breedSelectTarget=slot;
+  const inSlot=new Set(G.slots.filter(s=>s?.animal).map(s=>s.animal.uid));
+  const free=G.animals.filter(a=>a.ownerId==='player'&&!inSlot.has(a.uid));
+  const other = slot===1 ? G.breedSlot2 : G.breedSlot1;
+  document.getElementById('breed-select-list').innerHTML=`
+    <div style="max-height:400px;overflow-y:auto">
+      ${free.map(a=>`<div class="ac r-${a.rarity}" onclick="selectBreedAnimal('${a.uid}')">
+        <div class="ac-emoji">${a.emoji}</div>
+        <div class="ac-info">
+          <div class="ac-name">${a.name}</div>
+          <div class="ac-meta"><span class="rb rb-${a.rarity}">${RARITY_KEYS[a.rarity]}</span></div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <button class="btn btn-ghost btn-full" style="margin-top:10px" onclick="closeModal('modal-breed-select')">Cancel</button>`;
+  document.getElementById('modal-breed-select').classList.add('show');
+}
+
+function selectBreedAnimal(animalUid) {
+  if(_breedSelectTarget===1) G.breedSlot1=animalUid;
+  else G.breedSlot2=animalUid;
+  closeModal('modal-breed-select');
+  saveGame();
+  nav('breed');
+}
+
+function clearBreedSlot(slot) {
+  if(slot===1) G.breedSlot1=null;
+  else G.breedSlot2=null;
+  saveGame();
+  nav('breed');
+}
+
+function startBreeding() {
+  const a1=G.animals.find(a=>a.uid===G.breedSlot1);
+  const a2=G.animals.find(a=>a.uid===G.breedSlot2);
+  if(!a1||!a2){toast('Select both animals!');return;}
+  const cost=ECO.breedCost(a1,a2);
+  if(G.coins<cost){toast(`❌ Need ${fmtN(cost)} 🪙`);return;}
+  const time=ECO.breedTime(a1,a2);
+  G.coins-=cost;
+  G.breedJob={
+    parent1:a1.uid, parent2:a2.uid,
+    finishAt:Date.now()+time*1000,
+    totalTime:time*1000,
+    done:false,
+  };
+  G.breedsDone=(G.breedsDone||0)+1;
+  updateHUD();
+  saveGame();
+  checkMilestones();
+  nav('breed');
+  toast(`🧬 Breeding started! ${fmtTime(time)} remaining`);
+}
+
+function collectBreed() {
+  if(!G.breedJob?.done) return;
+  const a1=G.animals.find(a=>a.uid===G.breedJob.parent1);
+  const a2=G.animals.find(a=>a.uid===G.breedJob.parent2);
+  if(!a1||!a2){G.breedJob=null;saveGame();nav('breed');return;}
+  const {animal:child, upgraded} = ECO.breedResult(a1,a2);
+  child.ownerId='player';
+  G.animals.push(child);
+  G.breedJob=null;
+  G.breedSlot1=null;
+  G.breedSlot2=null;
+  document.getElementById('badge-breed').classList.remove('show');
+  saveGame();
+  checkMilestones();
+  nav('breed');
+  if(upgraded) {
+    milestone({icon:'🎊',title:'Rarity Upgrade!',desc:`${child.emoji} ${child.name} is ${RARITY_KEYS[child.rarity]}!`});
+    toast(`🎊 RARITY UPGRADE! ${child.emoji} ${child.name} [${RARITY_KEYS[child.rarity]}]`);
+  } else {
+    toast(`🧬 New ${RARITY_KEYS[child.rarity]}: ${child.emoji} ${child.name}!`);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 12 — DAILY REWARDS
+═══════════════════════════════════════════════════════ */
+function renderDaily(scr) {
+  updateDailyBadge();
+  const now=Date.now();
+  const msDay=86400000;
+  const canClaim=!G.lastDailyClaim||(now-G.lastDailyClaim)>=msDay;
+  const streak=G.streak||0;
+  const nextIn=G.lastDailyClaim?Math.max(0,msDay-(now-G.lastDailyClaim)):0;
+  const rewardPreview = ECO.dailyReward(streak,G.level);
+
+  scr.innerHTML = `
+    <div class="panel">
+      <div class="panel-title"><span class="panel-icon">🎁</span>Daily Rewards</div>
+      <div class="daily-grid">
+        ${Array.from({length:7},(_,i)=>{
+          const done=i<(streak%7)&&streak>0;
+          const today=i===(streak%7)&&canClaim;
+          const r=ECO.dailyReward(i,G.level);
+          return `<div class="day-box ${done?'done':''} ${today?'today':''}">
+            <span>${i===6?'🌟':'☀️'}</span>
+            <span class="dv">${fmtN(r.coins)}</span>
+            <span style="font-size:8px;color:inherit">Day ${i+1}</span>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="background:var(--bg-elevated);border-radius:var(--radius-md);padding:20px;text-align:center;margin-bottom:16px">
+        <div style="font-size:44px;margin-bottom:10px">${canClaim?'🎁':'⏳'}</div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:6px">
+          ${canClaim?`Day ${(streak%7)+1} Reward!`:'Next Reward'}
+        </div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:4px">
+          ${canClaim
+            ?`🪙 ${fmtN(rewardPreview.coins)} Coins + 💎 ${rewardPreview.tokens} ZOO Tokens`
+            :`Returns in ${fmtMs(nextIn)}`}
+        </div>
+        ${canClaim&&rewardPreview.boost?`<div style="color:var(--gold);font-size:12px;margin-top:4px">⚡ 4-Hour 2× Income Boost included!</div>`:''}
+        ${streak>=7?`<div style="color:var(--orange);font-size:11px;margin-top:4px">🔥 ${streak}-day streak bonus active!</div>`:''}
+      </div>
+      <button class="btn btn-gold btn-full" onclick="claimDaily()" ${canClaim?'':'disabled'} style="font-size:15px;padding:14px">
+        ${canClaim?'🎁 Claim Daily Reward':`⏳ ${fmtMs(nextIn)} remaining`}
+      </button>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><span class="panel-icon">📊</span>Your Stats</div>
+      <div class="stat-grid">
+        <div class="stat-item"><div class="stat-v">${G.level}</div><div class="stat-l">Level</div></div>
+        <div class="stat-item"><div class="stat-v">${streak}</div><div class="stat-l">🔥 Streak</div></div>
+        <div class="stat-item"><div class="stat-v">${fmtN(G.totalCoinsEarned||G.coins)}</div><div class="stat-l">Total Earned</div></div>
+        <div class="stat-item"><div class="stat-v">${G.caseOpened||0}</div><div class="stat-l">Cases Opened</div></div>
+        <div class="stat-item"><div class="stat-v">${G.animals.length}</div><div class="stat-l">Animals</div></div>
+        <div class="stat-item"><div class="stat-v">${G.salesDone||0}</div><div class="stat-l">Trades Done</div></div>
+        <div class="stat-item"><div class="stat-v">${G.breedsDone||0}</div><div class="stat-l">Breeds Done</div></div>
+        <div class="stat-item"><div class="stat-v">${G.milestones.length}</div><div class="stat-l">Milestones</div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><span class="panel-icon">🔗</span>Invite Friends</div>
+      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5">
+        Earn 800 ZOO tokens for every friend who joins! They get a bonus too.
+      </p>
+      <button class="btn btn-primary btn-full" onclick="copyRef()">🔗 Copy Referral Link</button>
+    </div>`;
+}
+
+function claimDaily() {
+  const now=Date.now();
+  const msDay=86400000;
+  if(G.lastDailyClaim&&(now-G.lastDailyClaim)<msDay){toast('⏰ Already claimed today!');return;}
+  if(G.lastDailyClaim&&(now-G.lastDailyClaim)>msDay*2) G.streak=0;
+  const reward=ECO.dailyReward(G.streak,G.level);
+  G.coins+=reward.coins;
+  G.tokens+=reward.tokens;
+  G.totalCoinsEarned+=reward.coins;
+  G.totalTokensEarned=(G.totalTokensEarned||0)+reward.tokens;
+  G.streak=(G.streak||0)+1;
+  G.lastDailyClaim=now;
+  if(reward.boost){
+    G.dailyBoostExpiry=now+4*3600000;
+    toast(`🎁 Claimed! +${fmtN(reward.coins)} 🪙 +${reward.tokens} 💎 ⚡4h Boost!`);
+  } else toast(`🎁 Claimed! +${fmtN(reward.coins)} 🪙 +${reward.tokens} 💎`);
+  milestone({icon:'🎁',title:'Daily Reward!',desc:`+${fmtN(reward.coins)} Coins · +${reward.tokens} ZOO`});
+  updateHUD();
+  updateDailyBadge();
+  saveGame();
+  nav('daily');
+}
+
+function copyRef() {
+  const link=`https://t.me/cryptozoo_bot/app?startapp=${G.userId||'player'}`;
+  navigator.clipboard?.writeText(link).then(()=>toast('🔗 Referral link copied!')).catch(()=>toast('🔗 '+link));
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 13 — LEADERBOARD
+═══════════════════════════════════════════════════════ */
+let _topTab='income';
+
+function renderTop(scr) {
+  const bots=[
+    {name:'ArcticWhale',total:9800000,inc:8420,wins:61,lv:42,animals:48},
+    {name:'NeonTiger',total:8200000,inc:7100,wins:57,lv:38,animals:42},
+    {name:'CryptoKing',total:7100000,inc:6200,wins:49,lv:35,animals:38},
+    {name:'ZooMaster',total:6400000,inc:5500,wins:44,lv:33,animals:35},
+    {name:'StarHunter',total:5200000,inc:4800,wins:38,lv:30,animals:31},
+    {name:'TokenWhale',total:4800000,inc:4100,wins:32,lv:27,animals:28},
+    {name:'BlockBear',total:3600000,inc:3200,wins:26,lv:24,animals:24},
+    {name:'DeFiDragon',total:2900000,inc:2700,wins:21,lv:20,animals:20},
+    {name:'DiamondPaws',total:2200000,inc:2100,wins:17,lv:18,animals:17},
+    {name:'GoldEagle',total:1800000,inc:1600,wins:13,lv:15,animals:14},
+  ];
+  const myInc=ECO.totalIncome(G);
+  const myEntry={name:G.name||'You',total:G.totalCoinsEarned||G.coins,inc:myInc,wins:G.salesDone||0,lv:G.level,animals:G.animals.length,isMe:true};
+  const allPlayers=[...bots,myEntry].sort((a,b)=>b.total-a.total);
+
+  scr.innerHTML=`
+    <div class="panel">
+      <div class="panel-title"><span class="panel-icon">🏆</span>Global Leaderboard</div>
+      <div class="stabs" id="top-tabs">
+        <div class="stab on" onclick="setTopTab('income',this)">Top Earners</div>
+        <div class="stab" onclick="setTopTab('level',this)">Top Levels</div>
+        <div class="stab" onclick="setTopTab('animals',this)">Collectors</div>
+      </div>
+      <div id="top-list"></div>
+    </div>`;
+  _topPlayers=allPlayers;_topBots=bots;
+  _renderTopList('income');
+}
+
+let _topPlayers=[], _topBots=[];
+function setTopTab(t,el){
+  document.querySelectorAll('#top-tabs .stab').forEach(s=>s.classList.remove('on'));
+  el?.classList.add('on');
+  _renderTopList(t);
+}
+function _renderTopList(t) {
+  const el=document.getElementById('top-list');
+  if(!el) return;
+  let sorted=[..._topPlayers];
+  if(t==='level') sorted.sort((a,b)=>b.lv-a.lv);
+  else if(t==='animals') sorted.sort((a,b)=>b.animals-a.animals);
+  else sorted.sort((a,b)=>b.total-a.total);
+
+  el.innerHTML=sorted.map((p,i)=>`
+    <div class="lb-row ${p.isMe?'me':''}">
+      <div class="lb-rank ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
+      <div style="flex:1">
+        <div class="lb-name">${p.name}${p.isMe?' (You)':''}</div>
+        <div class="lb-sub">Lv${p.lv} · ${p.animals} animals</div>
+      </div>
+      <div class="lb-val">
+        ${t==='income'?fmtN(p.total)+' 🪙':t==='level'?'Lv '+p.lv:p.animals+' animals'}
+      </div>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 14 — SETTINGS
+═══════════════════════════════════════════════════════ */
+const THEMES=[
+  {id:'dark',icon:'🌌',name:'Deep Space',desc:'Default dark mode'},
+  {id:'neon',icon:'🟢',name:'Neon Crypto',desc:'High-contrast neon'},
+  {id:'nature',icon:'🌿',name:'Nature Zoo',desc:'Jungle vibes'},
+  {id:'light',icon:'☀️',name:'Light iOS',desc:'Clean & minimal'},
+  {id:'minimal',icon:'⬛',name:'Minimal',desc:'Pure focus'},
+];
+
+function renderSettings(scr) {
+  const curTheme=document.documentElement.getAttribute('data-theme')||'dark';
+  scr.innerHTML=`
+    <div class="panel">
+      <div class="panel-title"><span class="panel-icon">🎨</span>Visual Theme</div>
+      <div class="theme-grid">
+        ${THEMES.map(t=>`<div class="theme-btn ${t.id===curTheme?'active':''}" onclick="setTheme('${t.id}')">
+          <div class="t-icon">${t.icon}</div>
+          <div class="t-name">${t.name}</div>
+          <div class="t-desc">${t.desc}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><span class="panel-icon">👤</span>Account</div>
+      <div class="inp-wrap" style="margin-bottom:12px">
+        <label class="inp-lbl">Your Display Name</label>
+        <input class="inp" type="text" id="name-input" value="${G.name||'Zookeeper'}" placeholder="Enter name…"/>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="saveName()">💾 Save Name</button>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><span class="panel-icon">⚠️</span>Data</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5">
+        All data is saved locally in your browser. Clearing site data will erase your progress.
+      </div>
+      <button class="btn btn-danger btn-full" onclick="resetGame()">🗑 Reset Game</button>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><span class="panel-icon">ℹ️</span>About</div>
+      <div style="font-size:12px;color:var(--text-secondary);line-height:1.8">
+        <strong>CryptoZoo</strong> v2.0<br>
+        ${ANIMAL_DB.length} animals · ${CASE_DEFS.length} case types<br>
+        7 rarity tiers · 7 mutations<br>
+        Full breeding genetics · Player marketplace<br>
+        Live auctions · Offline income<br><br>
+        Powered by the CryptoZoo Economy Engine™
+      </div>
+    </div>`;
+}
+
+function setTheme(id) {
+  document.documentElement.setAttribute('data-theme',id);
+  G.theme=id;
+  saveGame();
+  renderSettings(document.getElementById('screen'));
+  toast(`🎨 Theme changed to ${THEMES.find(t=>t.id===id)?.name}!`);
+}
+function saveName() {
+  const n=document.getElementById('name-input')?.value?.trim();
+  if(!n){toast('Enter a valid name');return;}
+  G.name=n;
+  saveGame();
+  toast(`✅ Name saved: ${n}`);
+}
+function resetGame() {
+  if(!confirm('⚠️ Reset all game data? This cannot be undone!')) return;
+  localStorage.removeItem(SAVE_KEY);
+  location.reload();
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 15 — MODALS, TOAST, MILESTONES
+═══════════════════════════════════════════════════════ */
+function closeModal(id) {
+  document.getElementById(id)?.classList.remove('show');
+}
+// Close modals on backdrop click
+document.querySelectorAll('.modal').forEach(m => {
+  m.addEventListener('click', e => { if(e.target===m) m.classList.remove('show'); });
+});
+
+function toast(msg, dur=3000) {
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>el.classList.remove('show'),dur);
+}
+
+let _msQueue=[];
+let _msRunning=false;
+function milestone({icon,title,desc}) {
+  _msQueue.push({icon,title,desc});
+  if(!_msRunning) _nextMilestone();
+}
+function _nextMilestone() {
+  if(!_msQueue.length){_msRunning=false;return;}
+  _msRunning=true;
+  const {icon,title,desc}=_msQueue.shift();
+  const banner=document.createElement('div');
+  banner.className='milestone-banner';
+  banner.innerHTML=`<div class="ms-icon">${icon}</div><div class="ms-text"><h4>${title}</h4><p>${desc}</p></div>`;
+  document.body.appendChild(banner);
+  setTimeout(()=>{
+    banner.classList.add('hide');
+    setTimeout(()=>{banner.remove();_nextMilestone();},300);
+  },3200);
+}
+
+/* ═══════════════════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', initGame);
+</script>
 </body>
 </html>
