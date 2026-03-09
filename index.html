@@ -139,6 +139,21 @@
     </div>
   </div>
 
+
+  <!-- ── LOOT BOXES ─────────────────────────────────── -->
+  <div id="sec-loot" class="section">
+    <div class="sec-title">🎲 Loot Boxes</div>
+    <div id="loot-box-list"></div>
+    <div style="font-size:12px;color:var(--tx2);font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin:10px 0 8px">Generated animals</div>
+    <div id="generated-list"></div>
+  </div>
+
+  <!-- ── MARKETPLACE ────────────────────────────────── -->
+  <div id="sec-market" class="section">
+    <div class="sec-title">🏪 Marketplace</div>
+    <div id="market-list"></div>
+  </div>
+
   <!-- ── TOKENS ──────────────────────────────────────── -->
   <div id="sec-tokens" class="section">
     <div class="sec-title">🪙 ZOO Token</div>
@@ -190,6 +205,12 @@
   </button>
   <button class="tab-btn" data-tab="ref"            onclick="UI.switchTab('ref',this)">
     <div class="tab-icon">👥</div><span>Friends</span>
+  </button>
+  <button class="tab-btn" data-tab="loot"           onclick="UI.switchTab('loot',this)">
+    <div class="tab-icon">🎲</div><span>Loot</span>
+  </button>
+  <button class="tab-btn" data-tab="market"         onclick="UI.switchTab('market',this)">
+    <div class="tab-icon">🏪</div><span>Market</span>
   </button>
   <button class="tab-btn" data-tab="tokens"         onclick="UI.switchTab('tokens',this)">
     <div class="tab-icon">🪙</div><span>Token</span>

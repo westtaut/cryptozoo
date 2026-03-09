@@ -49,6 +49,12 @@ function defaultState(userId) {
     referralCount:    0,
     referralEarned:   0,
 
+    // Loot boxes + generated animal inventory
+    generatedAnimals: [],
+    marketListings:   [],
+    lootOpened:       0,
+    nextAnimalUid:    1,
+
     // Timestamps
     lastSave:         Date.now(),
     lastOnline:       Date.now(),
@@ -79,6 +85,11 @@ function loadGame(userId) {
     // Merge defaults for any missing keys
     const def = defaultState(userId);
     const G   = Object.assign({}, def, saved);
+
+    // Ensure late-added arrays exist
+    if (!Array.isArray(G.generatedAnimals)) G.generatedAnimals = [];
+    if (!Array.isArray(G.marketListings))   G.marketListings   = [];
+    if (typeof G.nextAnimalUid !== 'number') G.nextAnimalUid = 1;
 
     // Ensure slots array is correct length
     while (G.slots.length < 50) G.slots.push(null);

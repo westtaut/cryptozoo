@@ -19,6 +19,8 @@ const UI = {
     if (this.currentTab === 'daily')   this.renderDaily();
     if (this.currentTab === 'ref')     this.renderReferral();
     if (this.currentTab === 'tokens')  this.renderTokens();
+    if (this.currentTab === 'loot')    this.renderLoot();
+    if (this.currentTab === 'market')  this.renderMarketplace();
   },
 
   // ── HUD ─────────────────────────────────────────────
@@ -352,6 +354,75 @@ const UI = {
           </div>`;
       }).join('');
     }
+  },
+
+
+
+  // ── LOOT ─────────────────────────────────────────────
+  renderLoot() {
+    const boxList = document.getElementById('loot-box-list');
+    const inv = document.getElementById('generated-list');
+    if (!boxList || !inv) return;
+
+    boxList.innerHTML = LOOT_BOXES.map(box => {
+      const can = G.coins >= box.price;
+      return `
+        <div class="shop-card ${can ? '' : 'locked'}">
+          <div class="shop-emoji">${box.emoji}</div>
+          <div class="shop-info">
+            <div class="shop-name">${box.name}</div>
+            <div class="shop-stats"><span class="profit-tag">Roll ${Math.round(box.statRoll.min*100)}-${Math.round(box.statRoll.max*100)}%</span></div>
+          </div>
+          <div class="shop-right">
+            <div class="shop-price ${can?'':'unafford'}">🪙 ${fmtN(box.price)}</div>
+            <button class="buy-btn ${can?'':'cant'}" onclick="openLootBox('${box.id}')">Open</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    if (!G.generatedAnimals.length) {
+      inv.innerHTML = '<div class="empty-state"><p>No generated animals yet.</p></div>';
+      return;
+    }
+
+    inv.innerHTML = G.generatedAnimals.map(a => `
+      <div class="upg-card">
+        <div class="upg-icon">${a.emoji}</div>
+        <div class="upg-info">
+          <div class="upg-name">${a.name} <span class="upg-lvl-tag">${a.tier}</span></div>
+          <div class="upg-desc">Income: +${fmtN(generatedIncome(a))}/s · Stats ${Math.round(a.statMult*100)}%</div>
+          <div class="upg-effect">Market value: 🪙 ${fmtN(a.marketValue)}</div>
+        </div>
+        <button class="upg-btn" onclick="listGeneratedAnimal(${a.uid}, ${a.marketValue})">List</button>
+      </div>
+    `).join('');
+  },
+
+  // ── MARKETPLACE ─────────────────────────────────────
+  renderMarketplace() {
+    const list = document.getElementById('market-list');
+    if (!list) return;
+
+    if (!G.marketListings.length) {
+      list.innerHTML = '<div class="empty-state"><p>No active listings.</p></div>';
+      return;
+    }
+
+    list.innerHTML = G.marketListings.map(l => {
+      const canBuy = G.coins >= l.price;
+      return `
+        <div class="shop-card ${canBuy?'':'locked'}">
+          <div class="shop-emoji">${l.animal.emoji}</div>
+          <div class="shop-info">
+            <div class="shop-name">${l.animal.name} <span class="tier-badge">${Math.round(l.animal.statMult*100)}%</span></div>
+            <div class="shop-stats"><span class="profit-tag">+${fmtN(generatedIncome(l.animal))}/s</span></div>
+          </div>
+          <div class="shop-right">
+            <div class="shop-price ${canBuy?'':'unafford'}">🪙 ${fmtN(l.price)}</div>
+            <button class="buy-btn ${canBuy?'':'cant'}" onclick="buyMarketListing('${l.id}')">Buy</button>
+          </div>
+        </div>`;
+    }).join('');
   },
 
   // ── OFFLINE BANNER ───────────────────────────────────
