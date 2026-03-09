@@ -571,3 +571,111 @@ body::before {
 
 /* ── SCROLLBAR ───────────────────────────────────────── */
 * { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.08) transparent; }
+/* ═══════════════════════════════════════════════════════
+   2026 iPhone refresh overrides
+   ═══════════════════════════════════════════════════════ */
+:root {
+  --bg: #02030a;
+  --bg2: #090b19;
+  --sf: color-mix(in srgb, #ffffff 8%, transparent);
+  --sf2: color-mix(in srgb, #ffffff 14%, transparent);
+  --bd: color-mix(in srgb, #ffffff 12%, transparent);
+  --top-h: 76px;
+  --tab-h: 82px;
+}
+
+body {
+  background:
+    radial-gradient(circle at 10% -10%, rgba(102, 126, 234, .22), transparent 35%),
+    radial-gradient(circle at 100% 110%, rgba(118, 75, 162, .25), transparent 45%),
+    linear-gradient(180deg, #060915 0%, #03040c 100%);
+}
+
+.topbar {
+  max-width: 430px;
+  margin: 0 auto;
+  border-radius: 0 0 24px 24px;
+  border: 1px solid rgba(255,255,255,.06);
+  border-top: none;
+  box-shadow: 0 14px 35px rgba(0,0,0,.28);
+}
+
+.app-logo-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(79,142,247,.25), rgba(162,89,255,.28));
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.16);
+}
+
+.app-headline { min-width: 0; flex: 1; }
+.app-subtitle {
+  color: var(--tx2);
+  font-size: 11px;
+  letter-spacing: .3px;
+}
+
+.ios-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 14px;
+  border-radius: 18px;
+}
+.ios-hero-label { color: var(--tx2); font-size: 11px; text-transform: uppercase; letter-spacing: .8px; }
+.ios-hero-title { font-family: var(--font-head); font-size: 20px; font-weight: 800; letter-spacing: -.3px; }
+.ios-hero-btn {
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--ac), var(--ac2));
+  color: #fff;
+  font-weight: 700;
+  padding: 11px 12px;
+}
+
+.section {
+  background: color-mix(in srgb, #050712 85%, transparent);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 20px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.tabbar {
+  bottom: 10px;
+  width: calc(100% - 14px);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 24px;
+  padding-top: 10px;
+  padding-inline: 4px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.35);
+}
+.tab-btn { min-width: 42px; }
+.tab-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 11px;
+}
+.tab-btn.active .tab-icon { transform: translateY(-1px) scale(1.08); }
+
+.shop-card,
+.upg-card,
+.daily-hero,
+.ref-link-card,
+.token-hero,
+.token-stat,
+.stat-card,
+.col-card {
+  border-radius: 16px;
+}
+
+@media (max-width: 390px) {
+  .app-subtitle { display: none; }
+  .topbar-stats { gap: 5px; }
+  .token-pill, .hud-pill { padding: 4px 8px; font-size: 12px; }
+  .zoo-grid { grid-template-columns: repeat(4,1fr); }
+  .tab-btn span { font-size: 8px; }
+}
