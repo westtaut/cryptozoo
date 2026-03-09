@@ -20,6 +20,10 @@ function defaultState(userId) {
 
     // Owned animal catalog: { animalId: { id, count, maxLevel } }
     owned: {},
+    animalInstances: [],
+
+    // Marketplace
+    marketListings: [],
 
     // Global upgrades: { upgradeId: level }
     upgrades: {
@@ -82,6 +86,8 @@ function loadGame(userId) {
 
     // Ensure slots array is correct length
     while (G.slots.length < 50) G.slots.push(null);
+    if (!Array.isArray(G.animalInstances)) G.animalInstances = [];
+    if (!Array.isArray(G.marketListings)) G.marketListings = [];
 
     return G;
   } catch(e) {

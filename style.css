@@ -121,14 +121,14 @@ body::before {
   backdrop-filter: blur(40px) saturate(200%);
   border-top: 1px solid var(--bd);
   padding: 8px 0 max(env(safe-area-inset-bottom),10px);
-  display: flex; justify-content: space-around;
+  display: flex; justify-content: flex-start; overflow-x: auto; gap: 2px;
 }
 .tab-btn {
   display: flex; flex-direction: column; align-items: center; gap: 2px;
   background: none; border: none; color: var(--tx3);
   font-size: 9px; font-weight: 600; font-family: var(--font);
   text-transform: uppercase; letter-spacing: .4px;
-  cursor: pointer; padding: 0 4px; min-width: 40px;
+  cursor: pointer; padding: 0 6px; min-width: 54px; flex: 1 0 auto;
   transition: color .2s;
 }
 .tab-icon {

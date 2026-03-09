@@ -7,6 +7,7 @@ const TIER_CONFIG = {
   rare:      { color: '#4f8ef7', glow: 'rgba(79,142,247,.4)',   label: 'Rare'      },
   epic:      { color: '#a855f7', glow: 'rgba(168,85,247,.45)',  label: 'Epic'      },
   legendary: { color: '#f59e0b', glow: 'rgba(245,158,11,.5)',   label: 'Legendary' },
+  mythic:    { color: '#ef4444', glow: 'rgba(239,68,68,.5)',    label: 'Mythic' },
 };
 
 const ANIMALS = [

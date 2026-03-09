@@ -71,6 +71,12 @@ function calcAnimalIncome(animal, animalLevel, G) {
   const globalBoost = 1 + (G.upgrades.income_booster || 0) * 0.1;
   const prestigeMult= [1,2,5,10,20,50][G.upgrades.prestige || 0] || 1;
   const dailyBoost  = G.dailyBoostActive ? 1.5 : 1;
+
+  if (animal.generatedStats) {
+    const generated = calcGeneratedIncome(def.profit, animal.generatedTier || def.tier, animal.generatedStats);
+    return generated * globalBoost * prestigeMult * dailyBoost;
+  }
+
   return def.profit * levelMult * globalBoost * prestigeMult * dailyBoost;
 }
 
@@ -135,6 +141,74 @@ function getZooCapacity(G) {
   return 50 + (G.upgrades.zoo_capacity || 0) * 10;
 }
 
+
+
+// ── LOOT BOXES & MARKET ───────────────────────────────
+const RARITY_MULTIPLIER = {
+  common: 1,
+  rare: 3,
+  epic: 8,
+  legendary: 20,
+  mythic: 50,
+};
+
+const CASES = [
+  { id:'starter', name:'Starter Case', emoji:'📦', price:100, pool:[['common',80],['rare',18],['epic',2]] },
+  { id:'jungle', name:'Jungle Case', emoji:'🌴', price:500, pool:[['common',60],['rare',30],['epic',9],['legendary',1]] },
+  { id:'ocean', name:'Ocean Case', emoji:'🌊', price:1200, pool:[['common',40],['rare',40],['epic',15],['legendary',5]] },
+  { id:'mythic', name:'Mythic Case', emoji:'🔮', price:5000, pool:[['rare',20],['epic',40],['legendary',30],['mythic',10]] },
+  { id:'event', name:'Event Case', emoji:'🎉', price:2500, temporary:true, pool:[['epic',50],['legendary',35],['mythic',15]] },
+];
+
+const STAT_RANGES = {
+  common:    { level:[1,5], profitMultiplier:[0.8,1.3] },
+  rare:      { level:[1,5], profitMultiplier:[0.85,1.35] },
+  epic:      { level:[2,6], profitMultiplier:[0.9,1.4] },
+  legendary: { level:[3,7], profitMultiplier:[1.1,1.5] },
+  mythic:    { level:[4,9], profitMultiplier:[1.2,1.7] },
+};
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomFloat(min, max, decimals = 2) {
+  const value = min + Math.random() * (max - min);
+  return Number(value.toFixed(decimals));
+}
+
+function rollRarity(caseDef) {
+  const roll = Math.random() * 100;
+  let acc = 0;
+  for (const [tier, chance] of caseDef.pool) {
+    acc += chance;
+    if (roll <= acc) return tier;
+  }
+  return caseDef.pool[caseDef.pool.length - 1][0];
+}
+
+function randomAnimalFromTier(tier) {
+  const list = ANIMALS.filter(a => a.tier === tier || (tier === 'mythic' && a.tier === 'legendary'));
+  if (!list.length) return null;
+  return list[randomInt(0, list.length - 1)];
+}
+
+function generateStats(tier) {
+  const range = STAT_RANGES[tier] || STAT_RANGES.common;
+  const level = randomInt(range.level[0], range.level[1]);
+  const profit_multiplier = randomFloat(range.profitMultiplier[0], range.profitMultiplier[1]);
+  const speed = randomInt(1, 5);
+  const charm = randomInt(1, 10);
+  return { level, profit_multiplier, speed, charm };
+}
+
+function calcGeneratedIncome(baseProfit, tier, stats) {
+  return baseProfit
+    * (RARITY_MULTIPLIER[tier] || 1)
+    * stats.level
+    * stats.profit_multiplier
+    * (1 + stats.charm / 20);
+}
 // ── MILESTONES ────────────────────────────────────────
 const MILESTONES = [
   // [threshold_type, threshold_value, token_reward, coin_reward, label]
